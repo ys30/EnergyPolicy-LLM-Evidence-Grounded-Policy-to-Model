@@ -1,0 +1,28 @@
+{
+  "fixture_only": true,
+  "not_research_data": true,
+  "description": "Synthetic examples strictly for testing benchmark calculations; none quote actual law.",
+  "records": [
+    {
+      "case_id": "SYN_CA_1", "instrument_id": "SYN_CA_RPS", "jurisdiction": "synthetic_CA", "split": "test", "gold_status": "synthetic",
+      "gold_fields": {"target_fraction": 0.6, "target_date": "2030-12-31", "obligated_entities": "retail_sellers", "denominator": "retail_sales", "numerator": "eligible_renewables"},
+      "gold_decision": "ABSTAIN",
+      "predicted_fields": {"target_fraction": 0.6, "target_date": "2030-12-31", "obligated_entities": "retail_sellers", "denominator": "local_generation", "numerator": "eligible_renewables"},
+      "predicted_decision": "LEGAL_CONSTRAINT"
+    },
+    {
+      "case_id": "SYN_CA_2", "instrument_id": "SYN_CA_RPS", "jurisdiction": "synthetic_CA", "split": "test", "gold_status": "synthetic",
+      "gold_fields": {"target_fraction": 0.6, "target_date": "2030-12-31", "obligated_entities": "retail_sellers", "denominator": "retail_sales", "numerator": "eligible_renewables"},
+      "gold_decision": "ABSTAIN",
+      "predicted_fields": {"target_fraction": 0.6, "target_date": "2030-12-31", "obligated_entities": "retail_sellers", "denominator": "retail_sales", "numerator": "eligible_renewables"},
+      "predicted_decision": "ABSTAIN"
+    },
+    {
+      "case_id": "SYN_NM_1", "instrument_id": "SYN_NM_RPS", "jurisdiction": "synthetic_NM", "split": "test", "gold_status": "synthetic",
+      "gold_fields": {"target_fraction": 0.5, "target_date": "2030-01-01", "obligated_entities": "distribution_cooperatives", "denominator": "retail_sales", "numerator": "eligible_renewables"},
+      "gold_decision": "ABSTAIN",
+      "predicted_fields": {"target_fraction": 0.5, "target_date": "2030-01-01", "obligated_entities": "public_utilities", "denominator": "retail_sales", "numerator": "eligible_renewables"},
+      "predicted_decision": "ABSTAIN"
+    }
+  ]
+}
