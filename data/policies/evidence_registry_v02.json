@@ -17,7 +17,12 @@
       "primary_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=399.15.&lawCode=PUC",
       "regulator_url": "https://www.cpuc.ca.gov/rps",
       "status": "human_review_pending",
-      "open_questions": ["credit retirement and classification", "compliance-period treatment", "scope of retail sellers", "historical statute version"]
+      "open_questions": [
+        "credit retirement and classification",
+        "compliance-period treatment",
+        "scope of retail sellers",
+        "historical statute version"
+      ]
     },
     {
       "case_id": "NM_RPS_2030_PUBLIC_UTILITIES",
@@ -33,7 +38,12 @@
       "primary_url": "https://www.srca.nm.gov/parts/title17/17.009.0572.html",
       "regulator_url": "https://www.prc.nm.gov/",
       "status": "human_review_pending",
-      "open_questions": ["exact effective date and compliance period", "REC retirement/delivery definitions", "exemptions", "statutory history"]
+      "open_questions": [
+        "exact effective date and compliance period",
+        "REC retirement/delivery definitions",
+        "exemptions",
+        "statutory history"
+      ]
     },
     {
       "case_id": "NM_RPS_2030_DISTRIBUTION_COOPS",
@@ -45,11 +55,16 @@
       "numerator": "eligible_renewables",
       "denominator": "retail_electricity_sales_in_NM",
       "accounting": "distribution_cooperative_rules_review_pending",
-      "provision": "17.9.571 NMAC, RPS requirements",
+      "provision": "17.9.571.8 NMAC",
       "primary_url": "https://www.srca.nm.gov/wp-content/uploads/2025/06/17.9.571.html",
       "regulator_url": "https://www.prc.nm.gov/",
       "status": "human_review_pending",
-      "open_questions": ["exact subsection and historical edition", "co-op accounting differences", "effective date"]
+      "open_questions": [
+        "historical edition and effective date",
+        "co-op accounting differences",
+        "REC retirement/supply arrangement",
+        "cost threshold application"
+      ]
     }
   ]
 }
