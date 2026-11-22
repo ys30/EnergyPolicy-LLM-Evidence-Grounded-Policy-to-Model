@@ -62,3 +62,9 @@ python -m unittest discover -s tests -v
 ```
 
 **Verification:** new files were committed to GitHub. CI was configured but its passing status has not yet been independently confirmed. This repository has no current LLM benchmark or empirical PyPSA run.
+
+## v0.3 — Auditable annotation pilot (2026-11-22)
+
+New: [annotation integrity gate](src/energy_policy_llm/annotations.py), [seven tests](tests/test_annotations.py), [offline candidate queue](scripts/create_annotation_queue.py) and [review protocol](docs/V03_ANNOTATION_PROTOCOL.md). Candidate policy descriptions are **not** gold labels. Exact-source snapshots and double human adjudication are required before benchmark metrics. No LLM or empirical PyPSA benchmark has yet been run.
+
+Run `python scripts/create_annotation_queue.py` to generate a local worklist (3 rows, 0 gold labels); the generated CSV is intentionally ignored under `outputs/`.
