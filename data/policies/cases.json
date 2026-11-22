@@ -1,0 +1,22 @@
+[
+  {
+    "case_id": "CA_SB100_RPS_2030",
+    "state": "CA",
+    "target_year": 2030,
+    "fraction": 0.60,
+    "metric": "eligible_renewables_retail_sales_share",
+    "covered_entities": "California retail sellers / relevant load-serving entities (requires clause review)",
+    "source_url": "https://www.cpuc.ca.gov/rps",
+    "legal_review": "needs_clause_review"
+  },
+  {
+    "case_id": "NM_ETA_RPS_2030",
+    "state": "NM",
+    "target_year": 2030,
+    "fraction": 0.50,
+    "metric": "eligible_renewables_retail_sales_share",
+    "covered_entities": "New Mexico public utilities (entity definitions and co-op differences require review)",
+    "source_url": "https://www.law.cornell.edu/regulations/new-mexico/17-9-572-10-NMAC",
+    "legal_review": "needs_clause_review"
+  }
+]
