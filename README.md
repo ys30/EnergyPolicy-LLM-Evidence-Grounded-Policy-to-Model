@@ -68,3 +68,7 @@ python -m unittest discover -s tests -v
 New: [annotation integrity gate](src/energy_policy_llm/annotations.py), [seven tests](tests/test_annotations.py), [offline candidate queue](scripts/create_annotation_queue.py) and [review protocol](docs/V03_ANNOTATION_PROTOCOL.md). Candidate policy descriptions are **not** gold labels. Exact-source snapshots and double human adjudication are required before benchmark metrics. No LLM or empirical PyPSA benchmark has yet been run.
 
 Run `python scripts/create_annotation_queue.py` to generate a local worklist (3 rows, 0 gold labels); the generated CSV is intentionally ignored under `outputs/`.
+
+## v0.4 — Offline benchmark evaluator (2026-11-22)
+
+Added a [group-aware evaluator](src/energy_policy_llm/benchmark.py), [synthetic evaluation fixture](data/fixtures/synthetic_benchmark_v04.json), [evaluation smoke test](scripts/evaluate_fixture.py), [eight tests](tests/test_benchmark.py), and [protocol](docs/V04_BENCHMARK_PROTOCOL.md). **All fixture data are synthetic; no real LLM accuracy or legal-compliance metric is claimed.** The evaluation helper refuses unadjudicated records in empirical mode and blocks policy-instrument train/test leakage. Run `python scripts/evaluate_fixture.py` after installing the project. GitHub Actions checks were configured; their results require separate confirmation.
