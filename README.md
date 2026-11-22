@@ -47,3 +47,18 @@ The `strict` command intentionally reports `ABSTAIN` for both CA and NM (retail 
 
 ## Citation
 Sources are URLs in case registry and SOURCE_AUDIT. A complete clause-level annotated corpus is not yet created. Record repository commit hashes, document retrieval dates, legal versions, and annotator decisions when extending this corpus.
+
+## v0.2 — Evidence schema & semantic audit (2026-11-22)
+
+The current repository includes [three provisional regulatory cases](data/policies/evidence_registry_v02.json), a typed [evidence-aware compiler](src/energy_policy_llm/evidence.py), [nine additional unit tests](tests/test_evidence.py), an [offline registry validator](scripts/validate_evidence_registry.py), a [pre-annotation research protocol](docs/V02_PROTOCOL.md), and [GitHub Actions CI](.github/workflows/ci.yml).
+
+The separate New Mexico distribution-cooperative case prevents treating all obligated entities as one legal class. All records remain `human_review_pending`; no exact legal excerpts or gold-standard annotation were fabricated. The evidence compiler rejects unsupported retail-sales → local-generation equivalence, except explicitly labeled nonlegal scenario proxies.
+
+Run:
+```bash
+python -m pip install -e .
+python scripts/validate_evidence_registry.py
+python -m unittest discover -s tests -v
+```
+
+**Verification:** new files were committed to GitHub. CI was configured but its passing status has not yet been independently confirmed. This repository has no current LLM benchmark or empirical PyPSA run.
