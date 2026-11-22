@@ -1,0 +1,55 @@
+{
+  "schema_version": "0.2.0",
+  "retrieved_date": "2026-11-22",
+  "validation_note": "Short structured descriptions, not verbatim statutory excerpts. Primary-source text snapshots and two-person adjudication are pending. None may be treated as gold labels.",
+  "cases": [
+    {
+      "case_id": "CA_RPS_2030_RETAIL_SELLERS",
+      "jurisdiction": "California",
+      "policy": "SB 100, RPS procurement",
+      "target_fraction": 0.6,
+      "target_date": "2030-12-31",
+      "obligated_entities": "retail sellers under applicable RPS rules",
+      "numerator": "eligible_renewables",
+      "denominator": "retail_electricity_sales",
+      "accounting": "eligible_procurement_and_certificates_review_pending",
+      "provision": "California Public Utilities Code 399.15(b)",
+      "primary_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=399.15.&lawCode=PUC",
+      "regulator_url": "https://www.cpuc.ca.gov/rps",
+      "status": "human_review_pending",
+      "open_questions": ["credit retirement and classification", "compliance-period treatment", "scope of retail sellers", "historical statute version"]
+    },
+    {
+      "case_id": "NM_RPS_2030_PUBLIC_UTILITIES",
+      "jurisdiction": "New Mexico",
+      "policy": "Renewable Energy Act / ETA, public utilities",
+      "target_fraction": 0.5,
+      "target_date": "2030-01-01",
+      "obligated_entities": "public utilities covered by 17.9.572 NMAC",
+      "numerator": "eligible_renewables",
+      "denominator": "retail_electricity_sales_to_NM_customers",
+      "accounting": "renewable_energy_certificates_and_delivery_review_pending",
+      "provision": "17.9.572.10 NMAC, Subsection B(4)",
+      "primary_url": "https://www.srca.nm.gov/parts/title17/17.009.0572.html",
+      "regulator_url": "https://www.prc.nm.gov/",
+      "status": "human_review_pending",
+      "open_questions": ["exact effective date and compliance period", "REC retirement/delivery definitions", "exemptions", "statutory history"]
+    },
+    {
+      "case_id": "NM_RPS_2030_DISTRIBUTION_COOPS",
+      "jurisdiction": "New Mexico",
+      "policy": "Renewable Energy Act / ETA, distribution cooperatives",
+      "target_fraction": 0.5,
+      "target_date": "2030-01-01",
+      "obligated_entities": "distribution cooperatives covered by 17.9.571 NMAC",
+      "numerator": "eligible_renewables",
+      "denominator": "retail_electricity_sales_in_NM",
+      "accounting": "distribution_cooperative_rules_review_pending",
+      "provision": "17.9.571 NMAC, RPS requirements",
+      "primary_url": "https://www.srca.nm.gov/wp-content/uploads/2025/06/17.9.571.html",
+      "regulator_url": "https://www.prc.nm.gov/",
+      "status": "human_review_pending",
+      "open_questions": ["exact subsection and historical edition", "co-op accounting differences", "effective date"]
+    }
+  ]
+}
