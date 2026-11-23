@@ -18,6 +18,27 @@ class CaptureCorpusTests(unittest.TestCase):
                 with self.assertRaises(RuntimeError):
                     capture(Path(d))
 
+    def test_fetch_error_produces_diagnostic_manifest(self):
+        with tempfile.TemporaryDirectory() as d:
+            with patch("scripts.capture_corpus_ci.fetch_official_html",
+                       side_effect=OSError("simulated DNS error")):
+                with self.assertRaises(RuntimeError):
+                    capture(Path(d))
+            manifest=json.loads((Path(d)/"capture_manifest.json").read_text())
+            self.assertEqual(manifest["status"],"partial_failure")
+            self.assertEqual(len(manifest["failures"]),2)
+            self.assertTrue(all(x["phase"]=="fetch_or_parse" for x in manifest["failures"]))
+            self.assertEqual(manifest["gold_count"],0)
+
+    def test_invalid_page_produces_content_diagnostic(self):
+        with tempfile.TemporaryDirectory() as d:
+            with patch("scripts.capture_corpus_ci.fetch_official_html",
+                       return_value="<html><body>403 Forbidden</body></html>"):
+                with self.assertRaises(RuntimeError):
+                    capture(Path(d))
+            manifest=json.loads((Path(d)/"capture_manifest.json").read_text())
+            self.assertTrue(all(x["phase"]=="content_validation" for x in manifest["failures"]))
+
     def test_synthetic_source_never_promoted_to_gold(self):
         with tempfile.TemporaryDirectory() as d:
             pages=[source_html(x[2]) for x in SOURCES]
