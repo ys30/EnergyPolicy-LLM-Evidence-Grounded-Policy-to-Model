@@ -84,3 +84,7 @@ Example: `python scripts/capture_official_sources.py --case NM_RPS_2030_PUBLIC_U
 Read two official New Mexico administrative rules and registered [14 section-specific source anchors](data/policies/source_anchors_v06.json) with source URLs, effective dates, and **paraphrased** review notes. Added [registry integrity checks](src/energy_policy_llm/provenance.py), [five tests](tests/test_provenance.py), [an audit command](scripts/audit_source_anchors.py), and [documentation](docs/V06_REAL_SOURCE_ANCHORS.md). Run `python scripts/audit_source_anchors.py` after installation.
 
 **No source snapshots were successfully acquired in the execution container. No human-adjudicated gold clauses or actual LLM/PyPSA results exist yet.** Source section anchors do not count as an extraction benchmark. CI check status must be verified independently.
+
+## v0.7 — Snapshot-bound policy candidate extraction (2026-11-22)
+
+Added [candidate extractor](src/energy_policy_llm/candidates.py), [local CLI](scripts/extract_local_candidates.py), [six synthetic unit tests](tests/test_candidates.py), and [protocol](docs/V07_LOCAL_CANDIDATE_EXTRACTION.md). Exact text spans, local snapshot hashes and legal section references are preserved. This is a **candidate worklist only**: no official full-text snapshots, human-gold annotations or LLM model scores have been obtained. The tool was locally smoke-tested on synthetic legal-style text; repository CI remains independently unconfirmed.
