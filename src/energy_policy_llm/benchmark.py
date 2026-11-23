@@ -27,8 +27,9 @@ class Case:
     def validate(self, allow_synthetic: bool = False) -> None:
         if self.split not in ("train", "validation", "test"):
             raise ValueError("Unknown split")
-        if self.gold_status != "adjudicated" and not (allow_synthetic and self.gold_status == "synthetic"):
-            raise ValueError("Only independently adjudicated records may be evaluated as empirical gold")
+        expected = "synthetic" if allow_synthetic else "adjudicated"
+        if self.gold_status != expected:
+            raise ValueError(f"Expected {expected} labels for this evaluation mode")
         if self.gold_decision not in DECISIONS or self.predicted_decision not in DECISIONS:
             raise ValueError("Unknown compiler decision")
         if not self.case_id or not self.instrument_id or not self.jurisdiction:
@@ -67,8 +68,8 @@ def evaluate(cases: list[Case], allow_synthetic: bool = False) -> dict:
         correct = sum(item.predicted_fields.get(key) == item.gold_fields[key] for item in cases)
         fields[key] = {"correct": correct, "total": n, "exact_match": correct / n}
     exact = sum(all(item.predicted_fields.get(key) == item.gold_fields[key] for key in FIELDS) for item in cases)
-    unsafe = sum(item.predicted_decision == "LEGAL_CONSTRAINT"
-                 and item.gold_decision != "LEGAL_CONSTRAINT" for item in cases)
+    at_risk = [item for item in cases if item.gold_decision != "LEGAL_CONSTRAINT"]
+    unsafe = sum(item.predicted_decision == "LEGAL_CONSTRAINT" for item in at_risk)
     abstain = sum(item.predicted_decision == "ABSTAIN" for item in cases)
     correct_decisions = sum(item.predicted_decision == item.gold_decision for item in cases)
     return {
@@ -78,6 +79,8 @@ def evaluate(cases: list[Case], allow_synthetic: bool = False) -> dict:
         "compiler_decision_accuracy": correct_decisions / n,
         "unsafe_accept_count": unsafe,
         "unsafe_accept_rate": unsafe / n,
+        "at_risk_count": len(at_risk),
+        "unsafe_accept_rate_at_risk": unsafe / len(at_risk) if at_risk else None,
         "abstention_rate": abstain / n,
-        "note": "Unsafe acceptance is an evaluator-defined mismatch, not a verified legal judgment.",
+        "note": "At-risk excludes reference LEGAL_CONSTRAINT cases; null conditional rate means no at-risk records. Legal truth requires independent review.",
     }
