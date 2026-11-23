@@ -72,3 +72,9 @@ Run `python scripts/create_annotation_queue.py` to generate a local worklist (3 
 ## v0.4 — Offline benchmark evaluator (2026-11-22)
 
 Added a [group-aware evaluator](src/energy_policy_llm/benchmark.py), [synthetic evaluation fixture](data/fixtures/synthetic_benchmark_v04.json), [evaluation smoke test](scripts/evaluate_fixture.py), [eight tests](tests/test_benchmark.py), and [protocol](docs/V04_BENCHMARK_PROTOCOL.md). **All fixture data are synthetic; no real LLM accuracy or legal-compliance metric is claimed.** The evaluation helper refuses unadjudicated records in empirical mode and blocks policy-instrument train/test leakage. Run `python scripts/evaluate_fixture.py` after installing the project. GitHub Actions checks were configured; their results require separate confirmation.
+
+## v0.5 — Official source capture and NM legal review queue (2026-11-22)
+
+Added a [source capture utility](src/energy_policy_llm/sources.py), [explicit capture command](scripts/capture_official_sources.py), [source validation tests](tests/test_sources.py), [12 targeted New Mexico review tasks](data/policies/review_tasks_v05.json) and [source capture protocol](docs/V05_SOURCE_CAPTURE.md). Source snapshots are written to ignored local outputs and never automatically promoted to gold labels. **No actual source downloads, human adjudications or LLM experiments are claimed for this release.**
+
+Example: `python scripts/capture_official_sources.py --case NM_RPS_2030_PUBLIC_UTILITIES`. Source capturing requires network access and may be blocked by publisher protections. CI does not crawl government websites.
