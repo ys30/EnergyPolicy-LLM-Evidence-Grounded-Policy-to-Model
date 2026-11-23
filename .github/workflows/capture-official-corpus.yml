@@ -38,6 +38,10 @@ jobs:
               data=json.loads((root/source["candidate_file"]).read_text(encoding="utf-8"))
               verify_candidates([Candidate(**d) for d in data],text)
               assert source["candidate_count"] == len(data) and len(data)>0
+              audit=json.loads((root/source["audit_file"]).read_text(encoding="utf-8"))
+              assert audit["candidate_count_uncapped"] == len(data)
+              assert source["beyond_previous_200_cap"] == audit["new_candidates_beyond_200"]
+              print(source["source_id"], "total=", len(data), "beyond_200=", audit["new_candidates_beyond_200"], "outside_section=", audit["keyword_lines_outside_matched_sections_count"], "inside_uncovered=", audit["keyword_lines_inside_sections_uncovered_count"])
           print("Both source snapshots and exact candidate spans verified")
           PY
       - name: Upload evidence artifacts (not gold labels)
