@@ -1,0 +1,62 @@
+{
+  "dataset_kind": "synthetic_fixture",
+  "heldout_jurisdictions": [
+    "demo_NM"
+  ],
+  "gold_records": [
+    {
+      "case_id": "syn-dev",
+      "instrument_id": "syn-policy-dev",
+      "jurisdiction": "demo_CA",
+      "split": "train",
+      "gold_status": "synthetic",
+      "gold_fields": {
+        "target_fraction": 0.6,
+        "target_date": "2030-12-31",
+        "obligated_entities": "retail_sellers",
+        "numerator": "eligible_renewables",
+        "denominator": "retail_sales"
+      },
+      "gold_decision": "ABSTAIN"
+    },
+    {
+      "case_id": "syn-test",
+      "instrument_id": "syn-policy-test",
+      "jurisdiction": "demo_NM",
+      "split": "test",
+      "gold_status": "synthetic",
+      "gold_fields": {
+        "target_fraction": 0.5,
+        "target_date": "2030-01-01",
+        "obligated_entities": "distribution_cooperative",
+        "numerator": "eligible_renewables",
+        "denominator": "retail_sales"
+      },
+      "gold_decision": "ABSTAIN"
+    }
+  ],
+  "predictions": [
+    {
+      "case_id": "syn-dev",
+      "predicted_fields": {
+        "target_fraction": 0.6,
+        "target_date": "2030-12-31",
+        "obligated_entities": "retail_sellers",
+        "numerator": "eligible_renewables",
+        "denominator": "retail_sales"
+      },
+      "predicted_decision": "ABSTAIN"
+    },
+    {
+      "case_id": "syn-test",
+      "predicted_fields": {
+        "target_fraction": 0.5,
+        "target_date": "2030-01-01",
+        "obligated_entities": "distribution_cooperative",
+        "numerator": "eligible_renewables",
+        "denominator": "local_generation"
+      },
+      "predicted_decision": "LEGAL_CONSTRAINT"
+    }
+  ]
+}
