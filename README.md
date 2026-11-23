@@ -118,3 +118,7 @@ Added [two short official legal excerpts](data/policies/official_excerpt_review_
 ## Safety metric correction (2026-11-23)
 
 Fixed a substantive evaluation ambiguity: the original `unsafe_accept_rate` is calculated across all test cases; the new `unsafe_accept_rate_at_risk` conditions on cases where the reference decision is **not** `LEGAL_CONSTRAINT` and is `null` if no such case exists. Added [five regression tests](tests/test_metric_regression.py), strengthened synthetic vs adjudicated label separation, and [documented the metric audit](docs/METRIC_AUDIT_2026-11-23.md). These are software quality improvements, not new LLM findings. Targeted regression tests passed locally; GitHub Actions full status unconfirmed.
+
+## Real government document capture through GitHub Actions (2026-11-23)
+
+A dedicated [official corpus capture workflow](.github/workflows/capture-official-corpus.yml) uses a GitHub-hosted Ubuntu runner to try downloading both New Mexico administrative rules, freeze normalized UTF-8 snapshots, extract hash-bound candidate spans, reject short/error pages, and publish an unreviewed seven-day artifact. Full instructions: [runbook](docs/GITHUB_SOURCE_CAPTURE_RUNBOOK.md). The workflow is manually dispatchable and configured to trigger when first committed. **A successful actual run has NOT yet been verified; do not state that the full texts have been downloaded.** No fabricated text or human gold labels have been introduced. New [offline capture tests](tests/test_capture_corpus_ci.py) use synthetic HTML only.
