@@ -39,6 +39,21 @@ class CaptureCorpusTests(unittest.TestCase):
             manifest=json.loads((Path(d)/"capture_manifest.json").read_text())
             self.assertTrue(all(x["phase"]=="content_validation" for x in manifest["failures"]))
 
+    def test_crlf_source_snapshot_and_offsets_roundtrip(self):
+        from energy_policy_llm.candidates import Candidate, verify_candidates
+        from hashlib import sha256
+        with tempfile.TemporaryDirectory() as d:
+            pages=[source_html(x[2]).replace("</p>", "\r\n</p>") for x in SOURCES]
+            with patch("scripts.capture_corpus_ci.fetch_official_html", side_effect=pages):
+                manifest=capture(Path(d))
+            for record in manifest["sources"]:
+                blob=(Path(d)/record["snapshot_file"]).read_bytes()
+                self.assertNotIn(b"\r", blob)
+                self.assertEqual(sha256(blob).hexdigest(),record["normalized_text_sha256"])
+                txt=blob.decode("utf-8")
+                candidates=[Candidate(**x) for x in json.loads((Path(d)/record["candidate_file"]).read_text())]
+                verify_candidates(candidates,txt)
+
     def test_synthetic_source_never_promoted_to_gold(self):
         with tempfile.TemporaryDirectory() as d:
             pages=[source_html(x[2]) for x in SOURCES]
