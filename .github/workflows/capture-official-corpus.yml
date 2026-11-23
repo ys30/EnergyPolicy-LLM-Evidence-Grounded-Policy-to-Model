@@ -17,6 +17,8 @@ jobs:
           python-version: '3.11'
       - name: Install project
         run: python -m pip install -e .
+      - name: Decode legacy official HTML and audit section coverage
+        run: python -m unittest tests.test_official_html_encoding -v
       - name: Fetch, validate and extract frozen source candidates
         run: python scripts/capture_corpus_ci.py
       - name: Validate manifest and offsets
