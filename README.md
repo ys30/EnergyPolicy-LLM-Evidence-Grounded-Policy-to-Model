@@ -78,3 +78,9 @@ Added a [group-aware evaluator](src/energy_policy_llm/benchmark.py), [synthetic 
 Added a [source capture utility](src/energy_policy_llm/sources.py), [explicit capture command](scripts/capture_official_sources.py), [source validation tests](tests/test_sources.py), [12 targeted New Mexico review tasks](data/policies/review_tasks_v05.json) and [source capture protocol](docs/V05_SOURCE_CAPTURE.md). Source snapshots are written to ignored local outputs and never automatically promoted to gold labels. **No actual source downloads, human adjudications or LLM experiments are claimed for this release.**
 
 Example: `python scripts/capture_official_sources.py --case NM_RPS_2030_PUBLIC_UTILITIES`. Source capturing requires network access and may be blocked by publisher protections. CI does not crawl government websites.
+
+## v0.6 — Source-grounded legal section anchors (2026-11-22)
+
+Read two official New Mexico administrative rules and registered [14 section-specific source anchors](data/policies/source_anchors_v06.json) with source URLs, effective dates, and **paraphrased** review notes. Added [registry integrity checks](src/energy_policy_llm/provenance.py), [five tests](tests/test_provenance.py), [an audit command](scripts/audit_source_anchors.py), and [documentation](docs/V06_REAL_SOURCE_ANCHORS.md). Run `python scripts/audit_source_anchors.py` after installation.
+
+**No source snapshots were successfully acquired in the execution container. No human-adjudicated gold clauses or actual LLM/PyPSA results exist yet.** Source section anchors do not count as an extraction benchmark. CI check status must be verified independently.
