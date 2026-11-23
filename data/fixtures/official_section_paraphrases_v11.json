@@ -1,0 +1,24 @@
+{
+  "dataset_kind": "official_section_derived_paraphrase_smoke_test_not_gold",
+  "notes": "Researcher-authored paraphrases grounded in official NM rules, not verbatim statutory quotations, full source snapshots, adjudicated labels, or representative model benchmark.",
+  "cases": [
+    {
+      "id": "NM_COOP_2030",
+      "source_url": "https://www.srca.nm.gov/wp-content/uploads/2025/06/17.9.571.html",
+      "provision": "17.9.571.8(C)",
+      "fragment": "By 2030, renewable energy is fifty percent of retail sales for distribution cooperatives."
+    },
+    {
+      "id": "NM_COOP_REC",
+      "source_url": "https://www.srca.nm.gov/wp-content/uploads/2025/06/17.9.571.html",
+      "provision": "17.9.571.8(A)",
+      "fragment": "Distribution cooperative compliance uses retirement of renewable energy certificates (RECs)."
+    },
+    {
+      "id": "NM_IOU_SCOPE",
+      "source_url": "https://www.srca.nm.gov/parts/title17/17.009.0572.html",
+      "provision": "17.9.572.2",
+      "fragment": "Rule scope concerns investor-owned electric utilities under New Mexico commission jurisdiction."
+    }
+  ]
+}
