@@ -1,0 +1,19 @@
+{
+  "status": "source-located-review-pending",
+  "legal_corpus_gold_count": 0,
+  "note": "These are human-review tasks, not copied clauses, annotations or legal rulings.",
+  "tasks": [
+    {"case_id":"NM_RPS_2030_PUBLIC_UTILITIES","provision":"17.9.572.2","topic":"definition of covered investor-owned utilities"},
+    {"case_id":"NM_RPS_2030_PUBLIC_UTILITIES","provision":"17.9.572.7(P)(2)","topic":"plan year retail sales denominator and adjustments"},
+    {"case_id":"NM_RPS_2030_PUBLIC_UTILITIES","provision":"17.9.572.7(R)(3)","topic":"REC definition and environmental attributes"},
+    {"case_id":"NM_RPS_2030_PUBLIC_UTILITIES","provision":"17.9.572.7(R)(5)","topic":"retail-sales RPS definition"},
+    {"case_id":"NM_RPS_2030_PUBLIC_UTILITIES","provision":"17.9.572.10","topic":"2030 minimum target and implementation"},
+    {"case_id":"NM_RPS_2030_PUBLIC_UTILITIES","provision":"17.9.572.17(A)","topic":"annual REC retirement evidence"},
+    {"case_id":"NM_RPS_2030_DISTRIBUTION_COOPS","provision":"17.9.571.2","topic":"cooperative scope"},
+    {"case_id":"NM_RPS_2030_DISTRIBUTION_COOPS","provision":"17.9.571.7(R)(2)","topic":"cooperative retail-sales denominator"},
+    {"case_id":"NM_RPS_2030_DISTRIBUTION_COOPS","provision":"17.9.571.8(A)","topic":"REC retirement for portfolio compliance"},
+    {"case_id":"NM_RPS_2030_DISTRIBUTION_COOPS","provision":"17.9.571.8(C)","topic":"2030 50 percent target"},
+    {"case_id":"NM_RPS_2030_DISTRIBUTION_COOPS","provision":"17.9.571.8(F)","topic":"responsibility for generation and transmission co-ops"},
+    {"case_id":"NM_RPS_2030_DISTRIBUTION_COOPS","provision":"17.9.571.10","topic":"reasonable cost threshold"}
+  ]
+}
