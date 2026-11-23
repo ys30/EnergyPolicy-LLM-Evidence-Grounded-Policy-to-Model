@@ -86,4 +86,12 @@ def fetch_official_html(url):
         if len(raw) > MAX_BYTES:
             raise ValueError("Source exceeds byte limit")
         charset = response.headers.get_content_charset() or "utf-8"
-    return raw.decode(charset, errors="replace")
+    # Some legacy NM official HTML is Windows-1252 while the response claims UTF-8.
+    # Replacement decoding silently corrupts statute section headings and offsets.
+    # Use strict decoding and an explicit reversible legacy fallback instead.
+    try:
+        return raw.decode(charset, errors="strict")
+    except (UnicodeDecodeError, LookupError):
+        if charset.lower().replace("_", "-") in {"utf-8", "utf8", "us-ascii", "ascii"}:
+            return raw.decode("windows-1252", errors="strict")
+        raise ValueError("Declared HTML charset cannot losslessly decode official source")
