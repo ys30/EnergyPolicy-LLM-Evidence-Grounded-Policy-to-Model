@@ -19,8 +19,8 @@ class Candidate:
     exact_text: str
     status: str = "candidate_unreviewed"
 
-def extract_candidates(text: str, source_id: str, source_version: str, limit: int = 200) -> list[Candidate]:
-    if not source_id or not source_version or not isinstance(limit, int) or limit < 1:
+def extract_candidates(text: str, source_id: str, source_version: str, limit: int | None = None) -> list[Candidate]:
+    if not source_id or not source_version or (limit is not None and (not isinstance(limit, int) or isinstance(limit, bool) or limit < 1)):
         raise ValueError("Source identity/version and positive limit required")
     digest = sha256(text.encode("utf-8")).hexdigest()
     matches = list(SECTION.finditer(text))
@@ -35,7 +35,7 @@ def extract_candidates(text: str, source_id: str, source_version: str, limit: in
                 stop = offset + len(line.rstrip())
                 if stop > start:
                     found.append(Candidate(source_id, digest, source_version, match.group(1), start, stop, text[start:stop]))
-                    if len(found) >= limit:
+                    if limit is not None and len(found) >= limit:
                         return found
             offset += len(line)
     return found
