@@ -29,8 +29,12 @@ jobs:
           manifest=json.loads((root/"capture_manifest.json").read_text(encoding="utf-8"))
           assert manifest["gold_count"] == 0
           assert len(manifest["sources"]) == 2
+          assert manifest["failures"] == []
           for source in manifest["sources"]:
-              text=(root/source["snapshot_file"]).read_text(encoding="utf-8")
+              blob=(root/source["snapshot_file"]).read_bytes()
+              text=blob.decode("utf-8")
+              from hashlib import sha256
+              assert sha256(blob).hexdigest() == source["normalized_text_sha256"]
               data=json.loads((root/source["candidate_file"]).read_text(encoding="utf-8"))
               verify_candidates([Candidate(**d) for d in data],text)
               assert source["candidate_count"] == len(data) and len(data)>0
