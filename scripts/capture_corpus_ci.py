@@ -10,6 +10,7 @@ from hashlib import sha256
 from pathlib import Path
 from energy_policy_llm.sources import fetch_official_html, html_to_text
 from energy_policy_llm.candidates import extract_candidates, verify_candidates, export_candidates
+from energy_policy_llm.candidate_audit import audit_snapshot
 
 SOURCES = (
     ("NM_IOU_2023", "https://www.srca.nm.gov/parts/title17/17.009.0572.html",
@@ -45,8 +46,12 @@ def capture(output: Path):
         snapshot.write_bytes(text.encode("utf-8"))
         if snapshot.read_bytes().decode("utf-8") != text:
             raise RuntimeError(f"{source_id}: snapshot roundtrip mismatch")
-        candidates = extract_candidates(text, source_id, version)
+        candidates = extract_candidates(text, source_id, version, limit=None)
         verify_candidates(candidates, text)
+        audit = audit_snapshot(text, source_id, version)
+        audit_path = output / f"{source_id}.audit.json"
+        audit_path.write_text(json.dumps(audit, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        assert audit["candidate_count_uncapped"] == len(candidates)
         if len(candidates) == 0:
             failures.append({"source_id": source_id, "phase": "candidate_extraction",
                              "characters": len(text), "required_section_found": True,
@@ -59,7 +64,11 @@ def capture(output: Path):
             "normalized_text_sha256": sha256(text.encode("utf-8")).hexdigest(),
             "normalized_characters": len(text), "candidate_count": len(candidates),
             "required_section": required_section, "gold_status": "unreviewed",
-            "snapshot_file": snapshot.name, "candidate_file": candidate_path.name
+            "snapshot_file": snapshot.name, "candidate_file": candidate_path.name,
+            "audit_file": audit_path.name,
+            "beyond_previous_200_cap": audit["new_candidates_beyond_200"],
+            "outside_section_keyword_lines": audit["keyword_lines_outside_matched_sections_count"],
+            "inside_section_uncovered_keyword_lines": audit["keyword_lines_inside_sections_uncovered_count"]
         })
     manifest["failures"] = failures
     manifest["status"] = "partial_failure" if failures else "unreviewed_source_capture"
