@@ -92,3 +92,9 @@ Added [candidate extractor](src/energy_policy_llm/candidates.py), [local CLI](sc
 ## v0.8 — Legal provenance gate and source-grounded risk probes (2026-11-22)
 
 [Research gate](src/energy_policy_llm/research_gate.py) now checks frozen snapshot hashes, exact evidence offsets, declared independent review metadata and an entire held-out test jurisdiction (plus instrument/version isolation). [Ten official-section-grounded risk prompts](data/policies/real_rule_probes_v08.json) are manually paraphrased **research review prompts**, not human-adjudicated gold or LLM predictions. [Nine synthetic tests](tests/test_research_gate.py), [probe audit script](scripts/check_real_rule_probes.py), and [protocol](docs/V08_PROVENANCE_AND_REAL_RULE_PROBES.md) were added. **Zero empirical accuracy claims.** The provenance checker does not independently verify identity or substantive legal review; a formal gold corpus remains necessary.
+
+## v0.9 — Executed synthetic sensitivity (2026-11-22)
+
+The [toy translation experiment](src/energy_policy_llm/sensitivity.py) demonstrates that a retail-sales requirement miscast as a local generation-share constraint can yield a plausible optimization solution even though the semantic compiler should abstain. On the synthetic model, a 60% generation proxy cost is 137.5 vs 100 unconstrained (arbitrary units). [Seven extra unit tests](tests/test_sensitivity.py) and [results/limitations](docs/V09_SYNTHETIC_SENSITIVITY.md) are included. This is **not** a real policy impact or LLM accuracy result; real source-frozen expert labels are the next scientific bottleneck.
+
+Run `python -m energy_policy_llm.sensitivity`. CI is configured but its status was not independently confirmed.
