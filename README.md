@@ -114,3 +114,7 @@ Run `python scripts/run_paraphrase_baseline.py`. Full GitHub Actions status is n
 ## v1.2 — Official excerpt review + real LLM prediction interface (2026-11-23)
 
 Added [two short official legal excerpts](data/policies/official_excerpt_review_v12.json), [model-prediction JSONL validator](src/energy_policy_llm/prediction_io.py), [CLI](scripts/validate_llm_predictions.py), [8 unit tests](tests/test_prediction_io.py), and [reproducibility protocol](docs/V12_LLM_PREDICTION_HANDOFF.md). This enables storing and checking independently executed LLM outputs; it **does not** invoke an LLM, prove human gold adjudication, or report accuracy. Complete official source snapshots remain blocked by container DNS. Short excerpts are not full-source hashes or gold. CI has been configured and requires independent run confirmation.
+
+## Safety metric correction (2026-11-23)
+
+Fixed a substantive evaluation ambiguity: the original `unsafe_accept_rate` is calculated across all test cases; the new `unsafe_accept_rate_at_risk` conditions on cases where the reference decision is **not** `LEGAL_CONSTRAINT` and is `null` if no such case exists. Added [five regression tests](tests/test_metric_regression.py), strengthened synthetic vs adjudicated label separation, and [documented the metric audit](docs/METRIC_AUDIT_2026-11-23.md). These are software quality improvements, not new LLM findings. Targeted regression tests passed locally; GitHub Actions full status unconfirmed.
