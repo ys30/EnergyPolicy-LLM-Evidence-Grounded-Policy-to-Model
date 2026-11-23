@@ -42,6 +42,8 @@ jobs:
               assert audit["candidate_count_uncapped"] == len(data)
               assert source["beyond_previous_200_cap"] == audit["new_candidates_beyond_200"]
               print(source["source_id"], "total=", len(data), "beyond_200=", audit["new_candidates_beyond_200"], "outside_section=", audit["keyword_lines_outside_matched_sections_count"], "inside_uncovered=", audit["keyword_lines_inside_sections_uncovered_count"])
+              print("MATCHED_SECTIONS", source["source_id"], audit["matched_section_ids"])
+              print("OUTSIDE_SECTION_SAMPLES", source["source_id"], json.dumps(audit["keyword_lines_outside_matched_sections"][:18], ensure_ascii=False))
           print("Both source snapshots and exact candidate spans verified")
           PY
       - name: Upload evidence artifacts (not gold labels)
