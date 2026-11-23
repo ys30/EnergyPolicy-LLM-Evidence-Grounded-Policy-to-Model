@@ -17,6 +17,7 @@ jobs:
       - run: python scripts/create_annotation_queue.py
       - run: python scripts/check_real_rule_probes.py
       - run: python scripts/audit_source_anchors.py
+      - run: python -m compileall -q src/energy_policy_llm/prediction_io.py scripts/validate_llm_predictions.py
       - run: python scripts/run_paraphrase_baseline.py
       - run: python scripts/evaluate_fixture.py
       - run: python scripts/run_gated_evaluation.py --dataset data/fixtures/synthetic_gated_v10.json --synthetic-demo
