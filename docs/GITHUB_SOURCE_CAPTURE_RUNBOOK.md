@@ -16,3 +16,15 @@ A 403/error page, unexpected short document, missing expected rule section or no
 
 ## Scientifically necessary next action
 The output is **unreviewed**. Use its frozen snapshots to begin independent annotation, then adjudicate at least 10–15 clauses as a pilot. Do not count extracted candidates as gold labels or report LLM accuracy. Inspect normalization around statutory subsections and source dates before annotation. Full texts must not be silently committed to a public repository without source redistribution review.
+
+## Failure diagnostics (2026-11-23 hotfix)
+
+The run now uploads a separate `NM-official-policy-capture-diagnostics` artifact **on failure** when a manifest exists. Download `capture_manifest.json` and inspect `failures[].phase`:
+
+- `fetch_or_parse`: DNS, SSL, 403/404, timeout, redirect or decoding failure; see `error_type` and `message`. A local DNS failure is not proof of GitHub runner DNS failure.
+- `content_validation`: downloaded content was too short or did not include the required section and renewable-law context. This can be an official-site HTML change or an error page.
+- `candidate_extraction`: actual source text was downloaded, but candidate extraction returned zero matches. Do **not** treat this as a successful legal corpus: inspect normalization and headings.
+
+The workflow continues to **fail closed**, so failed/partial results do not become gold or usable benchmark scores. It separately attempts both official sources so one failing page does not suppress diagnostics for the other. Check the job log if no diagnostic artifact exists (for example dependency installation or a workflow syntax error before the script runs).
+
+Note: This patch improves failure classification; it does not establish that the initial failed run was caused by any one of these phases, and a successful new run has not yet been observed.
