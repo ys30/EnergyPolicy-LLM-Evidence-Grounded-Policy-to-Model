@@ -1,0 +1,133 @@
+{
+  "schema_version": "0.6.0",
+  "verified_on": "2026-11-22",
+  "methodological_status": "primary_source_section_locations_checked_not_human_adjudicated_gold",
+  "primary_sources": [
+    {
+      "id": "NM_IOU_2023",
+      "url": "https://www.srca.nm.gov/parts/title17/17.009.0572.html",
+      "effective_date": "2023-02-28",
+      "category": "investor_owned_public_utilities"
+    },
+    {
+      "id": "NM_COOP_2025",
+      "url": "https://www.srca.nm.gov/wp-content/uploads/2025/06/17.9.571.html",
+      "effective_date": "2025-06-24",
+      "category": "distribution_and_other_cooperatives"
+    }
+  ],
+  "anchors": [
+    {
+      "anchor_id": "IOU_SCOPE",
+      "source_id": "NM_IOU_2023",
+      "provision": "17.9.572.2",
+      "paraphrase": "Applicability to investor-owned public utilities",
+      "evidence_status": "source_section_located",
+      "gold_status": "not_adjudicated"
+    },
+    {
+      "anchor_id": "IOU_DENOMINATOR",
+      "source_id": "NM_IOU_2023",
+      "provision": "17.9.572.7(P)(2)",
+      "paraphrase": "Plan-year retail sales adjusts for certain efficiency savings and voluntary-program sales",
+      "evidence_status": "source_section_located",
+      "gold_status": "not_adjudicated"
+    },
+    {
+      "anchor_id": "IOU_REC",
+      "source_id": "NM_IOU_2023",
+      "provision": "17.9.572.7(R)(3)",
+      "paraphrase": "REC definition links environmental attributes to renewable electricity delivered and assigned to NM customers",
+      "evidence_status": "source_section_located",
+      "gold_status": "not_adjudicated"
+    },
+    {
+      "anchor_id": "IOU_ELIGIBLE",
+      "source_id": "NM_IOU_2023",
+      "provision": "17.9.572.7(R)(4)",
+      "paraphrase": "Qualified resources include solar, wind, geothermal and conditional other technologies",
+      "evidence_status": "source_section_located",
+      "gold_status": "not_adjudicated"
+    },
+    {
+      "anchor_id": "IOU_RPS_DEFINITION",
+      "source_id": "NM_IOU_2023",
+      "provision": "17.9.572.7(R)(5)",
+      "paraphrase": "RPS definition uses retail electricity sales to consumers in New Mexico",
+      "evidence_status": "source_section_located",
+      "gold_status": "not_adjudicated"
+    },
+    {
+      "anchor_id": "IOU_TARGET",
+      "source_id": "NM_IOU_2023",
+      "provision": "17.9.572.10(B)(4)",
+      "paraphrase": "Fifty percent renewable by January 1 2030 for covered public utility retail sales",
+      "evidence_status": "source_section_located",
+      "gold_status": "not_adjudicated"
+    },
+    {
+      "anchor_id": "IOU_COMPLIANCE",
+      "source_id": "NM_IOU_2023",
+      "provision": "17.9.572.10(C)(1)",
+      "paraphrase": "Compliance involves retiring eligible RECs for renewable electricity delivered and assigned to New Mexico customers",
+      "evidence_status": "source_section_located",
+      "gold_status": "not_adjudicated"
+    },
+    {
+      "anchor_id": "IOU_WAIVER",
+      "source_id": "NM_IOU_2023",
+      "provision": "17.9.572.12(C)",
+      "paraphrase": "Cost-threshold conditions permit a waiver request with supporting evidence",
+      "evidence_status": "source_section_located",
+      "gold_status": "not_adjudicated"
+    },
+    {
+      "anchor_id": "COOP_SCOPE",
+      "source_id": "NM_COOP_2025",
+      "provision": "17.9.571.2",
+      "paraphrase": "Rule covers multiple cooperative forms including distribution and generation/transmission",
+      "evidence_status": "source_section_located",
+      "gold_status": "not_adjudicated"
+    },
+    {
+      "anchor_id": "COOP_RPS_DEFINITION",
+      "source_id": "NM_COOP_2025",
+      "provision": "17.9.571.7(R)(2)",
+      "paraphrase": "Distribution cooperative RPS defined using retail sales to New Mexico customers",
+      "evidence_status": "source_section_located",
+      "gold_status": "not_adjudicated"
+    },
+    {
+      "anchor_id": "COOP_REC",
+      "source_id": "NM_COOP_2025",
+      "provision": "17.9.571.8(A)",
+      "paraphrase": "Distribution cooperative RPS compliance demonstrated by REC retirement",
+      "evidence_status": "source_section_located",
+      "gold_status": "not_adjudicated"
+    },
+    {
+      "anchor_id": "COOP_TARGET",
+      "source_id": "NM_COOP_2025",
+      "provision": "17.9.571.8(C)",
+      "paraphrase": "Fifty percent renewable by January 1 2030 for distribution cooperative retail sales",
+      "evidence_status": "source_section_located",
+      "gold_status": "not_adjudicated"
+    },
+    {
+      "anchor_id": "COOP_SUPPLY",
+      "source_id": "NM_COOP_2025",
+      "provision": "17.9.571.8(F)(2)",
+      "paraphrase": "Generation/transmission cooperative has obligation for energy supplied to member distribution cooperatives",
+      "evidence_status": "source_section_located",
+      "gold_status": "not_adjudicated"
+    },
+    {
+      "anchor_id": "COOP_COST",
+      "source_id": "NM_COOP_2025",
+      "provision": "17.9.571.10(A)",
+      "paraphrase": "Inflation-adjusted cost threshold can excuse excess procurement cost in a given year",
+      "evidence_status": "source_section_located",
+      "gold_status": "not_adjudicated"
+    }
+  ]
+}
