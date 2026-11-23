@@ -1,0 +1,79 @@
+{
+  "schema_version": "0.8.0",
+  "source_access_date": "2026-11-22",
+  "status": "real_official_source_grounded_paraphrased_review_prompts_not_human_adjudicated_gold",
+  "records": [
+    {
+      "id": "NM_IOU_ENTITY",
+      "source": "https://www.srca.nm.gov/parts/title17/17.009.0572.html",
+      "provision": "17.9.572.2",
+      "issue": "An investor-owned utility scope statement must not be generalized to all electricity cooperatives.",
+      "risk": "entity_scope"
+    },
+    {
+      "id": "NM_IOU_SALES",
+      "source": "https://www.srca.nm.gov/parts/title17/17.009.0572.html",
+      "provision": "17.9.572.7(P)(2)",
+      "issue": "Plan-year retail sales use specified adjustments rather than gross local electricity generation.",
+      "risk": "denominator"
+    },
+    {
+      "id": "NM_IOU_REC",
+      "source": "https://www.srca.nm.gov/parts/title17/17.009.0572.html",
+      "provision": "17.9.572.7(R)(3)",
+      "issue": "RECs represent eligible environmental attributes and cannot be assumed to equal all local renewable output.",
+      "risk": "certificate"
+    },
+    {
+      "id": "NM_IOU_RESOURCE",
+      "source": "https://www.srca.nm.gov/parts/title17/17.009.0572.html",
+      "provision": "17.9.572.7(R)(4)",
+      "issue": "Renewable eligibility is technology- and condition-specific; not every carbon-free source qualifies.",
+      "risk": "technology_eligibility"
+    },
+    {
+      "id": "NM_IOU_TARGET",
+      "source": "https://www.srca.nm.gov/parts/title17/17.009.0572.html",
+      "provision": "17.9.572.10(B)(4)",
+      "issue": "The 2030 renewable fraction is a retail-sales policy obligation, not a local generation target.",
+      "risk": "denominator"
+    },
+    {
+      "id": "NM_COOP_ENTITY",
+      "source": "https://www.srca.nm.gov/wp-content/uploads/2025/06/17.9.571.html",
+      "provision": "17.9.571.7(D),(G)",
+      "issue": "Distribution cooperatives and generation/transmission cooperatives are distinct categories.",
+      "risk": "entity_scope"
+    },
+    {
+      "id": "NM_COOP_REC",
+      "source": "https://www.srca.nm.gov/wp-content/uploads/2025/06/17.9.571.html",
+      "provision": "17.9.571.8(A)",
+      "issue": "Cooperative RPS compliance requires certificate retirement evidence.",
+      "risk": "certificate"
+    },
+    {
+      "id": "NM_COOP_TARGET",
+      "source": "https://www.srca.nm.gov/wp-content/uploads/2025/06/17.9.571.html",
+      "provision": "17.9.571.8(C)",
+      "issue": "2030 50% target applies to the distribution cooperative retail sales context.",
+      "risk": "denominator"
+    },
+    {
+      "id": "NM_COOP_SUPPLY",
+      "source": "https://www.srca.nm.gov/wp-content/uploads/2025/06/17.9.571.html",
+      "provision": "17.9.571.8(F)(2)",
+      "issue": "Generation/transmission cooperative has member supply obligations distinct from direct retail sales.",
+      "risk": "entity_scope"
+    },
+    {
+      "id": "NM_COOP_COST",
+      "source": "https://www.srca.nm.gov/wp-content/uploads/2025/06/17.9.571.html",
+      "provision": "17.9.571.10(A)",
+      "issue": "Inflation-adjusted cost threshold and its limits cannot be omitted from compliance interpretation.",
+      "risk": "exception"
+    }
+  ],
+  "expected_default_decision": "ABSTAIN",
+  "disclaimer": "These are manually drafted research probes grounded in sections of official law, not gold annotations; no model has been scored."
+}
