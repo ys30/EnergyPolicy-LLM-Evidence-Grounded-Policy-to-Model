@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.2.0",
+  "status": "official_small_excerpts_not_full_snapshot_not_gold",
+  "retrieval_date": "2026-11-23",
+  "redistribution_note": "Only two short excerpts recorded; source page URLs and section positions must be checked against preserved official text. No two-person annotation or adjudication.",
+  "records": [
+    {
+      "case_id": "NM_COOP_2030",
+      "document_url": "https://www.srca.nm.gov/wp-content/uploads/2025/06/17.9.571.html",
+      "legal_version": "2025-06-24",
+      "provision": "17.9.571.8(C)",
+      "excerpt": "No later than January 1, 2030, renewable energy shall comprise no less than fifty percent",
+      "line_reference": "104",
+      "review_status": "needs_two_independent_reviews",
+      "source_snapshot_sha256": null,
+      "denominator_candidate": "retail_sales",
+      "target_fraction_candidate": 0.5
+    },
+    {
+      "case_id": "NM_IOU_SCOPE",
+      "document_url": "https://www.srca.nm.gov/parts/title17/17.009.0572.html",
+      "legal_version": "2023-02-28",
+      "provision": "17.9.572.2",
+      "excerpt": "This rule applies to all electric investor-owned public utilities under the commission’s jurisdiction.",
+      "line_reference": "14",
+      "review_status": "needs_two_independent_reviews",
+      "source_snapshot_sha256": null,
+      "entity_candidate": "investor_owned_public_utilities"
+    }
+  ]
+}
