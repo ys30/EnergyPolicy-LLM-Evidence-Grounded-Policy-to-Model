@@ -8,6 +8,8 @@ import re
 from datetime import datetime, timezone
 from hashlib import sha256
 from pathlib import Path
+import traceback
+import sys
 from energy_policy_llm.sources import fetch_official_html, html_to_text
 from energy_policy_llm.candidates import extract_candidates, verify_candidates, export_candidates
 
@@ -23,9 +25,15 @@ def capture(output: Path):
     manifest = {"schema_version": "1.3.0", "status": "unreviewed_source_capture",
                 "retrieved_at_utc": datetime.now(timezone.utc).isoformat(),
                 "sources": [], "gold_count": 0, "llm_calls": 0}
+    failures = []
     for source_id, url, required_section, version in SOURCES:
-        html = fetch_official_html(url)
-        text = html_to_text(html)
+        try:
+            html = fetch_official_html(url)
+            text = html_to_text(html)
+        except Exception as exc:
+            failures.append({"source_id": source_id, "phase": "fetch_or_parse",
+                             "error_type": type(exc).__name__, "message": str(exc)[:500]})
+            continue
         # Prevent uploading an error page disguised as official law
         if len(text) < 1200 or required_section not in text:
             raise RuntimeError(f"{source_id}: incomplete or unexpected regulatory page")
@@ -38,7 +46,10 @@ def capture(output: Path):
         candidates = extract_candidates(text, source_id, version)
         verify_candidates(candidates, text)
         if len(candidates) == 0:
-            raise RuntimeError(f"{source_id}: zero candidates; inspect HTML normalization")
+            failures.append({"source_id": source_id, "phase": "candidate_extraction",
+                             "characters": len(text), "required_section_found": True,
+                             "note": "Zero exact-offset candidates; inspect original normalized snapshot"})
+            continue
         candidate_path = output / f"{source_id}.candidates.json"
         export_candidates(candidates, candidate_path)
         manifest["sources"].append({
@@ -48,9 +59,13 @@ def capture(output: Path):
             "required_section": required_section, "gold_status": "unreviewed",
             "snapshot_file": snapshot.name, "candidate_file": candidate_path.name
         })
+    manifest["failures"] = failures
+    manifest["status"] = "partial_failure" if failures else "unreviewed_source_capture"
     (output / "capture_manifest.json").write_text(
         json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(json.dumps(manifest, indent=2))
+    if failures:
+        raise RuntimeError("Official source capture failed: " + "; ".join(x["source_id"] + ":" + x["phase"] for x in failures))
     return manifest
 
 if __name__ == "__main__":
