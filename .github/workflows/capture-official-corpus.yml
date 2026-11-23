@@ -44,3 +44,11 @@ jobs:
           path: outputs/official_corpus/
           retention-days: 7
           if-no-files-found: error
+      - name: Upload diagnostic manifest on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: NM-official-policy-capture-diagnostics
+          path: outputs/official_corpus/capture_manifest.json
+          retention-days: 7
+          if-no-files-found: warn
