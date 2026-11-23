@@ -16,4 +16,5 @@ jobs:
       - run: python scripts/validate_evidence_registry.py
       - run: python scripts/create_annotation_queue.py
       - run: python scripts/evaluate_fixture.py
+      - run: python -m compileall -q src scripts tests
       - run: python -m unittest discover -s tests -v
