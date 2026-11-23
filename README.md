@@ -104,3 +104,9 @@ Run `python -m energy_policy_llm.sensitivity`. CI is configured but its status w
 The [evaluation entry point](scripts/run_gated_evaluation.py) connects [provenance, frozen-source and jurisdiction gates](src/energy_policy_llm/validated_eval.py) to the existing [benchmark metrics](src/energy_policy_llm/benchmark.py). The checked-in [synthetic integration fixture](data/fixtures/synthetic_gated_v10.json) deliberately predicts local generation instead of retail sales and wrongly accepts a legal constraint. Its held-out test output must show 1/1 unsafe acceptance, 0 denominator matches, and `publication_ready=false`. Those are **fabricated demonstration outcomes**, NOT empirical accuracy results or measured LLM behavior. New tests and [protocol](docs/V10_GATED_EVALUATION.md) are included. Official source text snapshots and independently adjudicated gold labels remain unavailable; no real model benchmark has run.
 
 Run `python scripts/run_gated_evaluation.py --dataset data/fixtures/synthetic_gated_v10.json --synthetic-demo`.
+
+## v1.1 — Executed conservative paragraph baseline (2026-11-23)
+
+[Baseline extractor](src/energy_policy_llm/real_text_baseline.py), [three official-section-inspired *paraphrases*](data/fixtures/official_section_paraphrases_v11.json), [runner](scripts/run_paraphrase_baseline.py), [five focused tests](tests/test_real_text_baseline.py), and [limits/next steps](docs/V11_BASELINE_SMOKE.md) have been added. The local standalone test passed 5/5. The deterministic baseline detects numeric percentages and years but correctly abstains from automatically creating legal constraints, and fails to parse spelled-out *fifty percent*. **These hand-written paraphrases are neither gold labels nor original full legal text, and no LLM performance result is claimed.**
+
+Run `python scripts/run_paraphrase_baseline.py`. Full GitHub Actions status is not yet independently confirmed.
