@@ -98,3 +98,9 @@ Added [candidate extractor](src/energy_policy_llm/candidates.py), [local CLI](sc
 The [toy translation experiment](src/energy_policy_llm/sensitivity.py) demonstrates that a retail-sales requirement miscast as a local generation-share constraint can yield a plausible optimization solution even though the semantic compiler should abstain. On the synthetic model, a 60% generation proxy cost is 137.5 vs 100 unconstrained (arbitrary units). [Seven extra unit tests](tests/test_sensitivity.py) and [results/limitations](docs/V09_SYNTHETIC_SENSITIVITY.md) are included. This is **not** a real policy impact or LLM accuracy result; real source-frozen expert labels are the next scientific bottleneck.
 
 Run `python -m energy_policy_llm.sensitivity`. CI is configured but its status was not independently confirmed.
+
+## v1.0 — First integrated held-out evaluation workflow (2026-11-22)
+
+The [evaluation entry point](scripts/run_gated_evaluation.py) connects [provenance, frozen-source and jurisdiction gates](src/energy_policy_llm/validated_eval.py) to the existing [benchmark metrics](src/energy_policy_llm/benchmark.py). The checked-in [synthetic integration fixture](data/fixtures/synthetic_gated_v10.json) deliberately predicts local generation instead of retail sales and wrongly accepts a legal constraint. Its held-out test output must show 1/1 unsafe acceptance, 0 denominator matches, and `publication_ready=false`. Those are **fabricated demonstration outcomes**, NOT empirical accuracy results or measured LLM behavior. New tests and [protocol](docs/V10_GATED_EVALUATION.md) are included. Official source text snapshots and independently adjudicated gold labels remain unavailable; no real model benchmark has run.
+
+Run `python scripts/run_gated_evaluation.py --dataset data/fixtures/synthetic_gated_v10.json --synthetic-demo`.
