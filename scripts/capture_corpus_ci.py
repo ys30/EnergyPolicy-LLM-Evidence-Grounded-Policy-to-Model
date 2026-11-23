@@ -8,8 +8,6 @@ import re
 from datetime import datetime, timezone
 from hashlib import sha256
 from pathlib import Path
-import traceback
-import sys
 from energy_policy_llm.sources import fetch_official_html, html_to_text
 from energy_policy_llm.candidates import extract_candidates, verify_candidates, export_candidates
 
@@ -29,20 +27,24 @@ def capture(output: Path):
     for source_id, url, required_section, version in SOURCES:
         try:
             html = fetch_official_html(url)
-            text = html_to_text(html)
+            text = html_to_text(html).replace("\r\n", "\n").replace("\r", "\n")
         except Exception as exc:
             failures.append({"source_id": source_id, "phase": "fetch_or_parse",
                              "error_type": type(exc).__name__, "message": str(exc)[:500]})
             continue
         # Prevent uploading an error page disguised as official law
         if len(text) < 1200 or required_section not in text:
-            raise RuntimeError(f"{source_id}: incomplete or unexpected regulatory page")
+            failures.append({"source_id": source_id, "phase": "content_validation", "characters": len(text), "reason": "missing section or too short"})
+            continue
         if not re.search(r"RENEWABLE\s+(?:PORTFOLIO|ENERGY)", text, re.I):
-            raise RuntimeError(f"{source_id}: missing expected regulatory subject")
+            failures.append({"source_id": source_id, "phase": "content_validation", "characters": len(text), "reason": "missing renewable subject"})
+            continue
         snapshot = output / f"{source_id}.txt"
         if snapshot.exists():
             raise FileExistsError(snapshot)
-        snapshot.write_text(text, encoding="utf-8")
+        snapshot.write_bytes(text.encode("utf-8"))
+        if snapshot.read_bytes().decode("utf-8") != text:
+            raise RuntimeError(f"{source_id}: snapshot roundtrip mismatch")
         candidates = extract_candidates(text, source_id, version)
         verify_candidates(candidates, text)
         if len(candidates) == 0:
