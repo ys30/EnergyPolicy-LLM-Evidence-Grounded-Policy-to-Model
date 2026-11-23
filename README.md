@@ -88,3 +88,7 @@ Read two official New Mexico administrative rules and registered [14 section-spe
 ## v0.7 — Snapshot-bound policy candidate extraction (2026-11-22)
 
 Added [candidate extractor](src/energy_policy_llm/candidates.py), [local CLI](scripts/extract_local_candidates.py), [six synthetic unit tests](tests/test_candidates.py), and [protocol](docs/V07_LOCAL_CANDIDATE_EXTRACTION.md). Exact text spans, local snapshot hashes and legal section references are preserved. This is a **candidate worklist only**: no official full-text snapshots, human-gold annotations or LLM model scores have been obtained. The tool was locally smoke-tested on synthetic legal-style text; repository CI remains independently unconfirmed.
+
+## v0.8 — Legal provenance gate and source-grounded risk probes (2026-11-22)
+
+[Research gate](src/energy_policy_llm/research_gate.py) now checks frozen snapshot hashes, exact evidence offsets, declared independent review metadata and an entire held-out test jurisdiction (plus instrument/version isolation). [Ten official-section-grounded risk prompts](data/policies/real_rule_probes_v08.json) are manually paraphrased **research review prompts**, not human-adjudicated gold or LLM predictions. [Nine synthetic tests](tests/test_research_gate.py), [probe audit script](scripts/check_real_rule_probes.py), and [protocol](docs/V08_PROVENANCE_AND_REAL_RULE_PROBES.md) were added. **Zero empirical accuracy claims.** The provenance checker does not independently verify identity or substantive legal review; a formal gold corpus remains necessary.
