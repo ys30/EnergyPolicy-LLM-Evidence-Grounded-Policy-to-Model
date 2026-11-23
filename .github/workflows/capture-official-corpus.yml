@@ -1,0 +1,46 @@
+name: capture-official-NM-policy-corpus
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/capture-official-corpus.yml
+permissions:
+  contents: read
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install project
+        run: python -m pip install -e .
+      - name: Fetch, validate and extract frozen source candidates
+        run: python scripts/capture_corpus_ci.py
+      - name: Validate manifest and offsets
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from energy_policy_llm.candidates import Candidate,verify_candidates
+          root=Path("outputs/official_corpus")
+          manifest=json.loads((root/"capture_manifest.json").read_text(encoding="utf-8"))
+          assert manifest["gold_count"] == 0
+          assert len(manifest["sources"]) == 2
+          for source in manifest["sources"]:
+              text=(root/source["snapshot_file"]).read_text(encoding="utf-8")
+              data=json.loads((root/source["candidate_file"]).read_text(encoding="utf-8"))
+              verify_candidates([Candidate(**d) for d in data],text)
+              assert source["candidate_count"] == len(data) and len(data)>0
+          print("Both source snapshots and exact candidate spans verified")
+          PY
+      - name: Upload evidence artifacts (not gold labels)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: NM-official-policy-corpus-unreviewed
+          path: outputs/official_corpus/
+          retention-days: 7
+          if-no-files-found: error
