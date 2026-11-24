@@ -11,6 +11,7 @@ from pathlib import Path
 from energy_policy_llm.sources import fetch_official_html, html_to_text
 from energy_policy_llm.candidates import extract_candidates, verify_candidates, export_candidates
 from energy_policy_llm.candidate_audit import audit_snapshot
+from energy_policy_llm.review_queue import make_review_queue
 
 SOURCES = (
     ("NM_IOU_2023", "https://www.srca.nm.gov/parts/title17/17.009.0572.html",
@@ -52,6 +53,11 @@ def capture(output: Path):
         audit_path = output / f"{source_id}.audit.json"
         audit_path.write_text(json.dumps(audit, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         assert audit["candidate_count_uncapped"] == len(candidates)
+        if not audit["heading_order_valid"]:
+            raise RuntimeError(f"{source_id}: duplicate or disordered numbered headings")
+        queue = make_review_queue(text, source_id, version)
+        queue_path = output / f"{source_id}.review_queue.json"
+        queue_path.write_text(json.dumps(queue, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         if len(candidates) == 0:
             failures.append({"source_id": source_id, "phase": "candidate_extraction",
                              "characters": len(text), "required_section_found": True,
@@ -66,6 +72,9 @@ def capture(output: Path):
             "required_section": required_section, "gold_status": "unreviewed",
             "snapshot_file": snapshot.name, "candidate_file": candidate_path.name,
             "audit_file": audit_path.name,
+            "review_queue_file": queue_path.name,
+            "review_sections": queue["section_count"],
+            "high_priority_sections": queue["priority_section_count"],
             "beyond_previous_200_cap": audit["new_candidates_beyond_200"],
             "outside_section_keyword_lines": audit["keyword_lines_outside_matched_sections_count"],
             "inside_section_uncovered_keyword_lines": audit["keyword_lines_inside_sections_uncovered_count"]
