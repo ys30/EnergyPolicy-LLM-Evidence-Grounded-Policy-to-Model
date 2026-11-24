@@ -5,7 +5,7 @@ from pathlib import Path
 import json
 import re
 
-SECTION = re.compile(r"(?m)^\s*(17\.9\.(?:571|572)\.\d+)\s+([A-Z][^\n]{2,100})")
+SECTION = re.compile(r"(?m)^[ \t\u00a0]*(17\.9\.(?:571|572)\.\d+)[ \t\u00a0]+(?!NMAC\b)([A-Z][^\n]{2,100})")
 SIGNAL = re.compile(r"\b(?:percent|percentage|renewable|portfolio|certificate|retail|cost|compliance|cooperative|public utility)\b", re.I)
 
 @dataclass(frozen=True)
