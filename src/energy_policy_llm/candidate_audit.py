@@ -28,6 +28,10 @@ def audit_snapshot(text: str, source_id: str, source_version: str) -> dict:
                 uncovered.append({"line": line_number, "start": left, "sample": line.strip()[:160]})
         line_start += len(line)
     by_section = Counter(c.provision for c in candidates)
+    heading_ids = [m.group(1) for m in sections]
+    heading_numbers = [int(s.rsplit(".", 1)[1]) for s in heading_ids]
+    duplicate_headings = sorted(s for s, count in Counter(heading_ids).items() if count > 1)
+    out_of_order = [heading_ids[i] for i in range(1, len(heading_ids)) if heading_numbers[i] <= heading_numbers[i-1]]
     # The older 200 cap selected from the start of the document.
     old_count = min(200, len(candidates))
     return {
@@ -41,7 +45,10 @@ def audit_snapshot(text: str, source_id: str, source_version: str) -> dict:
         "keyword_lines_outside_matched_sections": outside,
         "keyword_lines_inside_sections_uncovered": uncovered,
         "matched_section_count": len(sections),
-        "matched_section_ids": [m.group(1) for m in sections],
+        "matched_section_ids": heading_ids,
+        "duplicate_heading_ids": duplicate_headings,
+        "nonincreasing_section_ids": out_of_order,
+        "heading_order_valid": not duplicate_headings and not out_of_order,
         "referenced_section_ids_anywhere": sorted(set(SECTION_REF.findall(text))),
         "candidates_by_section": dict(sorted(by_section.items())),
         "audit_scope": "keyword-bearing physical lines only; no semantic recall guarantee",
