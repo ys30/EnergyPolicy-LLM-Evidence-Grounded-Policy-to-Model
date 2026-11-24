@@ -42,9 +42,11 @@ jobs:
               assert source["candidate_count"] == len(data) and len(data)>0
               audit=json.loads((root/source["audit_file"]).read_text(encoding="utf-8"))
               assert audit["candidate_count_uncapped"] == len(data)
+              assert audit["heading_order_valid"], (source["source_id"], audit["duplicate_heading_ids"], audit["nonincreasing_section_ids"])
               assert source["beyond_previous_200_cap"] == audit["new_candidates_beyond_200"]
               print(source["source_id"], "total=", len(data), "beyond_200=", audit["new_candidates_beyond_200"], "outside_section=", audit["keyword_lines_outside_matched_sections_count"], "inside_uncovered=", audit["keyword_lines_inside_sections_uncovered_count"])
               print("MATCHED_SECTIONS", source["source_id"], audit["matched_section_ids"])
+              print("HEADING_ORDER_VALID", source["source_id"], audit["heading_order_valid"])
               if source["source_id"] == "NM_IOU_2023":
                   from energy_policy_llm.candidates import SECTION
                   for match in SECTION.finditer(text):
