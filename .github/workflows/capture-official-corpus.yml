@@ -45,6 +45,11 @@ jobs:
               assert source["beyond_previous_200_cap"] == audit["new_candidates_beyond_200"]
               print(source["source_id"], "total=", len(data), "beyond_200=", audit["new_candidates_beyond_200"], "outside_section=", audit["keyword_lines_outside_matched_sections_count"], "inside_uncovered=", audit["keyword_lines_inside_sections_uncovered_count"])
               print("MATCHED_SECTIONS", source["source_id"], audit["matched_section_ids"])
+              if source["source_id"] == "NM_IOU_2023":
+                  from energy_policy_llm.candidates import SECTION
+                  for match in SECTION.finditer(text):
+                      if match.group(1) in ("17.9.572.16", "17.9.572.18", "17.9.572.19"):
+                          print("HEADING_CONTEXT", match.group(1), "char", match.start(), repr(text[max(0,match.start()-120):min(len(text),match.end()+150)]))
               print("OUTSIDE_SECTION_SAMPLES", source["source_id"], json.dumps(audit["keyword_lines_outside_matched_sections"][:18], ensure_ascii=False))
           print("Both source snapshots and exact candidate spans verified")
           PY
