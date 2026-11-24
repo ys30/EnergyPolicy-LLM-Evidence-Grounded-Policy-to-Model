@@ -43,6 +43,12 @@ jobs:
               audit=json.loads((root/source["audit_file"]).read_text(encoding="utf-8"))
               assert audit["candidate_count_uncapped"] == len(data)
               assert audit["heading_order_valid"], (source["source_id"], audit["duplicate_heading_ids"], audit["nonincreasing_section_ids"])
+              queue=json.loads((root/source["review_queue_file"]).read_text(encoding="utf-8"))
+              assert queue["gold_count"] == 0 and queue["section_count"] == source["review_sections"]
+              assert queue["source_sha256"] == source["normalized_text_sha256"]
+              for section in queue["sections"]:
+                  assert text[section["section_start_char"]:section["section_end_char"]] == section["section_text"]
+              print("REVIEW_QUEUE", source["source_id"], "sections=", queue["section_count"], "high_priority=", queue["priority_section_count"])
               assert source["beyond_previous_200_cap"] == audit["new_candidates_beyond_200"]
               print(source["source_id"], "total=", len(data), "beyond_200=", audit["new_candidates_beyond_200"], "outside_section=", audit["keyword_lines_outside_matched_sections_count"], "inside_uncovered=", audit["keyword_lines_inside_sections_uncovered_count"])
               print("MATCHED_SECTIONS", source["source_id"], audit["matched_section_ids"])
