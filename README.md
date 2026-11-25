@@ -1,6 +1,18 @@
 # EnergyPolicy-LLM: Evidence-grounded Policy-to-Model
 
-**Status (2026-11-22):** research starter / proof of concept, **not** validated legal compliance or a published study.
+**Status (updated 2026-11-25):** official-source extraction and a ChatGPT-assisted annotation pilot are underway; **not** validated legal compliance, an adjudicated gold benchmark, or a published study.
+
+## Annotation pilot — ChatGPT-assisted prefill (2026-11-24; review ongoing)
+
+**What was actually done:** An OpenAI **ChatGPT conversational assistant** was used to help pre-fill candidate policy-obligation fields for **14 initial review tasks** in a working Excel annotation workbook for New Mexico's **2025 distribution-cooperative regulation, 17.9.571 NMAC**. The assistant worked from the source-grounded section review context (14 identified sections and 167 deterministic keyword-candidate lines) to suggest items such as target fraction/date, obligated entity, compliance denominator, REC considerations, exceptions, and preliminary model-mapping decisions. These are **AI-assisted draft annotations, not independently verified LLM predictions or adjudicated gold labels**. The workbook has not been deposited as a versioned GitHub research artifact.
+
+**Model provenance:** The prefill was produced in an OpenAI ChatGPT chat session, **not** by this repository's API pipeline. The **exact backend model ID/version and a reproducible prompt/run log were not recorded** for that session; consequently, assigning a specific GPT model/version would be unsupported. This limitation will be rectified for future formal model runs by preserving model ID, prompt hash, raw outputs and timestamps.
+
+**Progress:** The researcher reports having checked the **2025 rule against the source file**; structured field-level annotation and independent second-reviewer adjudication are **still in progress**. The current independently adjudicated **gold-standard count is 0**. The **14** rows are review tasks/AI-prefilled suggestions, **not** 14 externally executed benchmark calls. The **167** source candidates are regex-extracted text lines, not LLM-generated obligations.
+
+**Important distinction:** The phrase *"used an LLM to pre-fill candidate obligations"* refers to the **manual, ChatGPT-assisted annotation preparation** above. Earlier README statements saying **"no LLM experiments yet"** refer specifically to the absence of **scripted, model-versioned, repeatable LLM/RAG benchmarking and accuracy measurements**. No direct-LLM-vs-RAG comparison, measured LLM accuracy, or empirical PyPSA impact result is claimed.
+
+Related files: [official corpus verification](docs/SECTION_REVIEW_AUDIT_2026-11-24.md) · [annotation research protocol](docs/V03_ANNOTATION_PROTOCOL.md) · [future model output schema](docs/V12_LLM_PREDICTION_HANDOFF.md).
 
 ## Research question
 Can clean-energy policy language be converted into auditable, executable energy-system scenarios without silently changing its legal meaning?
@@ -30,7 +42,7 @@ PYTHONPATH=src python -m energy_policy_llm.cli --mode proxy
 The `strict` command intentionally reports `ABSTAIN` for both CA and NM (retail sales are not the same as generation). `proxy` reports an artificial cost comparison, explicitly labeled a scenario proxy, not a legally faithful estimate.
 
 ## Scope / caveats
-- **No LLM API or credentials required** yet. The baseline is a deterministic extractor; an actual LLM/RAG experiment is a planned workstream, not a completed result.
+- **No LLM API or credentials required** to run this repository. A separate ChatGPT-assisted, **unversioned** prefill produced 14 draft human-review tasks; the committed extraction baseline is deterministic. No formal, reproducible LLM/RAG benchmark has yet been executed.
 - Do not interpret example summaries as authoritative legal text. Legal targets require line-level primary document confirmation and definition of eligible resources, obligated entities, credit accounting, and compliance periods.
 - No empirical generation or load data yet. Synthetic demonstration is non-publishable and not a PyPSA computation.
 - Cross-model integration to a *new, frozen* PyPSA test model is a next step; avoid changing existing PyPSA research repos.
@@ -110,6 +122,8 @@ Run `python scripts/run_gated_evaluation.py --dataset data/fixtures/synthetic_ga
 [Baseline extractor](src/energy_policy_llm/real_text_baseline.py), [three official-section-inspired *paraphrases*](data/fixtures/official_section_paraphrases_v11.json), [runner](scripts/run_paraphrase_baseline.py), [five focused tests](tests/test_real_text_baseline.py), and [limits/next steps](docs/V11_BASELINE_SMOKE.md) have been added. The local standalone test passed 5/5. The deterministic baseline detects numeric percentages and years but correctly abstains from automatically creating legal constraints, and fails to parse spelled-out *fifty percent*. **These hand-written paraphrases are neither gold labels nor original full legal text, and no LLM performance result is claimed.**
 
 Run `python scripts/run_paraphrase_baseline.py`. Full GitHub Actions status is not yet independently confirmed.
+
+**Annotation-stage clarification (updated 2026-11-25):** A separate ChatGPT conversational prefill later prepared 14 draft policy-review tasks for the 2025 NM cooperative regulation. This did **not** involve this baseline script, and its exact backend model version was not logged. See the prominent [annotation pilot](#annotation-pilot--chatgpt-assisted-prefill-2026-11-24-review-ongoing) section above.
 
 ## v1.2 — Official excerpt review + real LLM prediction interface (2026-11-23)
 
