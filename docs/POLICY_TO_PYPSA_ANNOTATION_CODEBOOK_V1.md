@@ -1,6 +1,6 @@
-# Policy-to-PyPSA Annotation Codebook v1.1
+# Policy-to-PyPSA Annotation Codebook v1.2
 
-**Updated:** 2026-11-27 (v1.1) | **Status:** PROPOSED — draft human-annotation protocol, **not** an adjudicated gold standard.
+**Updated:** 2026-11-27 (v1.2) | **Status:** PROPOSED — draft human-annotation protocol, **not** an adjudicated gold standard.
 
 **Project:** EnergyPolicy-LLM — Evidence-Grounded Policy-to-Model  
 **Current source materials:** Frozen `NM_COOP_2025.txt` (17.9.571 NMAC; source SHA-256 `673f60931b4a2ba68c2de2c67601097bc292da8998536bdb38b3d014acfdea01`) and `NM_2025_Policy_to_PyPSA_Reviewed_AI_Draft_Blind_Annotation.xlsx`.  
@@ -322,3 +322,92 @@ The IR intentionally contains **no executable Python**. `LINOPY_CUSTOM_CONSTRAIN
 ## 10. Version control and change management
 
 Version v1.1 extends v1.0 with a two-track conventional review and PyPSA compilation protocol, a required input contract, typed IR, and pre-solve/post-solve acceptance gates. This document defines labels and procedures only. If subsequent research reveals that the schema cannot faithfully represent a legal clause in 17.9.571, release an updated codebook and explicit migration guidance; **never silently revise adjudicated labels**. Prioritize pilot reliability testing on 8(F) responsibilities, 9(A) conditional applicability, 10(A) cost exceptions, and the apparent 11(D)/(H) source cross-reference ambiguity. All examples remain non-gold until independent human adjudication.
+
+## 11. Literature-grounded amendments (v1.2; 2026-11-27)
+
+**Status:** Methodological specification only. The changes below are based on external literature and current PyPSA-USA documentation, not on new model runs or independently adjudicated annotations. These additions supersede any overly categorical wording elsewhere in this codebook about a model having no REC functionality.
+
+### 11.1 Literature comparison and limits of novelty
+
+| Literature / implementation | Established results or functionality | Required modification to this codebook |
+|---|---|---|
+| Moore et al., **OblEx26** (NLLP 2026) | Structured obligations separated into Holder, Type, Beneficiary, Antecedent, Consequent, Source / Legal Channel, anchored to quotes; 48 documents over 14 jurisdictions | Add obligation-role slots and linked exact evidence per slot; distinguish actor, beneficiary, activation condition and required consequent |
+| Guliani et al., **De Jure** (arXiv 2026, preprint) | Normalization, semantic rule extraction, multi-criterion LLM judging and iterative repair; results largely involve LLM-judge evaluation | Use per-field checks and explicit error taxonomy; independent human adjudication remains necessary for this study's gold labels |
+| **Deciphering disagreement in the annotation of EU legislation**, AI & Law (2026 publication; 2024 online) | Legal annotation agreement depends on task category, annotation revision and span matching | Measure field-wise and span-wise inter-annotator agreement, including pre-/post-adjudication counts |
+| Piskorski & Skotarczak, **Extraction of Information Provision Activity Requirements from EU Acquis** (EMNLP Industry 2025) | Identification of reporting obligations with actors, targets, deadlines and frequencies | Separate reporting recipient, frequency, reference period and deadline |
+| **Optimization Modeling Meets LLMs** (IJCAI 2025 survey) | Existing optimization benchmarks may have erroneous gold answers; errors increase with complexity | Validate mathematical reference formulations independently; stratify simple/conditional/multi-provision problems |
+| **PyPSA-USA Custom Constraints** (living documentation, accessed 2026-11-27) | Already implements regional RPS/CES share constraints and REC-trading-zone pooling, drawing on ReEDS trajectories | Treat native-existing aggregate implementation as a mandatory baseline; distinguish it from full certificate-ledger compliance |
+| **US-REGEN Electric-Fuels model documentation** (2025) | RPS/CES modeling considers technology crediting, REC trading restrictions, bundled/unbundled RECs, alternative compliance payments and carve-outs | Add REC market/crediting flags and alternate-compliance/payment semantics where legally relevant |
+
+**Literature links:** [OblEx26](https://aclanthology.org/2026.nllp-1.4/), [De Jure](https://arxiv.org/abs/2604.02276), [annotation disagreement](https://link.springer.com/article/10.1007/s10506-024-09423-9), [EU Acquis](https://aclanthology.org/2025.emnlp-industry.102/), [IJCAI survey](https://ijcai.org/proceedings/2025/1192), [PyPSA-USA constraints](https://pypsa-usa.readthedocs.io/en/stable/model-constraints.html), [US-REGEN](https://us-regen-docs.epri.com/v2025/approach/electric-fuels-model.html).
+
+**Novelty boundary:** Neither extracting regulations into fields, generating optimization models from natural language, nor implementing an RPS share constraint is new by itself. A plausible research contribution, contingent on experiments, is *evidence-anchored, legally faithful, model-profile-specific policy compilation with quantification of semantic translation error propagation into power-system results*. The literature above does not establish that this full combination is entirely absent elsewhere.
+
+### 11.2 Additional legal obligation slots (new fields)
+
+Add the following to the **atomic legal proposition**, not merely to the PyPSA model:
+
+| Field | Type | Annotation guidance |
+|---|---|---|
+| `obligation_holder` | controlled entity ID / UNKNOWN | Party legally required to act, distinct from facilities physically generating electricity; maps to existing `obligated_entity` with explicit distinctions |
+| `beneficiary_or_recipient` | entity IDs / NONE / UNKNOWN | Who receives the benefit, certificate allocation, or report; use NONE for a rule that has no expressly stated beneficiary |
+| `antecedent_conditions[]` | condition IDs + AND/OR/NOT | Factual/legal prerequisites, whether independently specified in same provision or cross-referenced |
+| `consequent_action` | typed action + object + metric | What the actor must/may do once the antecedent holds |
+| `regulatory_scope` | jurisdiction + affected sales/supply + resource/recipient types | Do not assume model BA, utility, G&T, state or trading zone are interchangeable |
+| `rule_relationships[]` | `DEFINES`, `IMPLEMENTS`, `EXCEPTS`, `CONDITIONS`, `ALLOCATES_RESPONSIBILITY`, `CITES`, `SUPERSEDES` | Preserve document-level connections and candidate inconsistencies |
+| `reporting_recipient`, `reporting_frequency`, `reporting_reference_period` | entity/date/period | Separate annual report deadline from the compliance period being reported |
+| `scope_of_negation` | spans / NONE / UNKNOWN | Record whether 'not', 'except', or 'unless' scopes over the whole obligation or only a subcondition |
+| `evidence_support_status` | `ENTAILED`, `CONTRADICTED`, `NOT_STATED`, `AMBIGUOUS` | For each proposed field; NOT_STATED is not permission to infer it from generic regulatory practice |
+
+**Illustration — 17.9.571.8(F)(1):** `holder=G&T cooperative`; `consequent_action=assign renewable energy`; `beneficiary_or_recipient=member distribution cooperative`. Do **not** silently relabel the assigned object as REC. Review 8(F)(2) separately for supply-related compliance responsibility.
+
+### 11.3 Existing RPS/REC functionality: more precise compiler capabilities
+
+The earlier statement that a standard PyPSA network does not have a *complete certificate-ownership-and-retirement ledger* remains useful as a limitation, but **PyPSA-USA already has aggregate RPS/CES and REC-trading-zone constraint support**. Never claim that PyPSA-USA cannot model any REC trading. Record both implemented features and unrepresented statutory details.
+
+| `accounting_fidelity` label | Definition | Allowed claim |
+|---|---|---|
+| `NONE` | No RPS/REC policy accounting is modeled | No compliance inference |
+| `RPS_AGGREGATE_PROXY` | Eligible generation share imposed relative to modeled demand in a region | Regional power-model scenario only |
+| `REC_ZONE_TRADING_APPROXIMATION` | Eligible contributions pooled at configured REC-trading-zone level, as in supported PyPSA-USA configurations | Aggregated credit-trading proxy; not a per-entity REC ledger |
+| `REC_LEDGER_EXPLICIT` | Ownership, eligibility, transfers, vintages, retirement, banking and double-counting constraints are explicitly represented and tested | Candidate input to entity-specific compliance evaluation, subject to legal review |
+| `LEGAL_EQUIVALENCE_UNVERIFIED` | Use as an **additional evidence flag**, not a replacement for one fidelity label | No legal-equivalence claim |
+
+**New required metadata:** `policy_engine_name`, `policy_engine_commit`, `policy_engine_opts`, `rps_region_or_trading_zone`, `crediting_basis`, `REC_trade_scope`, `REC_banking_years`, `bundling_requirement`, `alternative_compliance_payment`, `eligible_resource_mapping_provenance`. Use null/UNKNOWN where rules or model capabilities are not established. PyPSA-USA release notes document correctness changes to RPS/CES processing; pin the code commit and test that the configured constraint actually binds before treating a feasible solution as evidence.
+
+### 11.4 New quality metrics and required experimental baselines
+
+**Annotation and extraction evaluation:**
+- `atomic_obligation_recall`: independent obligation-level denominator from an adjudicated inventory; 167 keyword-bearing lines is *not* the denominator.
+- `evidence_span_precision_recall_f1`: exact and overlap-aware matching; count unsupported/fabricated spans.
+- `field_exact_match` and `field_macro_f1`: actors, normative force, deadline role, conditions, beneficiaries, REC terms and denominator. Report NOT_STATED as a separate class.
+- `relation_f1`: cross-references, conditions, exceptions, actor responsibility and prior-version links.
+- `reviewer_agreement`: Cohen's kappa for nominal fields, Krippendorff's alpha where suitable, and span-overlap measures; report agreement *before* adjudication and number of conflicts resolved.
+
+**Compilation and validation evaluation:**
+- `input_binding_accuracy`: shares of correctly mapped source fields, actor/model entities, unit and time dimensions.
+- `semantic_equivalence_rate`: independent manual assessment for supported cases; a solver's `SOLVED` status cannot establish legal correctness.
+- `unsafe_acceptance_rate_at_risk`: among cases where legal-equivalent compilation should be blocked, fraction incorrectly accepted as legally equivalent.
+- `appropriate_abstention_rate`: among unsupported/ambiguous cases, fraction that abstain with correct reasons; report also false refusals on supported cases.
+- `constraint_build_success`, `solve_success`, `max_constraint_violation`: independent technical gates, not legal accuracy metrics.
+- `downstream_delta_cost`, `delta_capacity`, `delta_dispatch`, `delta_emissions`, `delta_curtailment`, `compliance_gap`, `infeasibility_rate`: baseline vs perturbed policy with *the same network, weather, assumptions and solver*.
+- Include **negative controls**: wrong denominator, missing 2050 conjunctive condition, wrong obligated entity, treating renewable as zero carbon, REC double counting, misclassified reporting obligation, wrong vintage/credit banking.
+
+**Minimum comparison arms (not yet run):**
+1. Deterministic regex/section parser → structured legal fields.
+2. Direct LLM extraction → fields (without retrieval validator).
+3. Retrieval/evidence-grounded LLM → fields and spans.
+4. Retrieval + typed legal IR + static semantic guards → model readiness.
+5. Existing **PyPSA-USA RPS/CES/REC-zone policy implementation** as a model-side baseline (with its exact version and configured scope).
+6. Proposed clause-aware, entity-aware, certificate-aware compiler where the necessary data actually exist.
+
+Separate **legal interpretation fidelity**, **aggregation accuracy**, **solvability**, and **downstream model differences**. A very accurate RPS aggregate *proxy* may be useful scientifically while still not being a complete legally equivalent compliance assessment.
+
+### 11.5 Study design and feasible next step
+
+**Pilot:** Keep the 26 preliminary review tasks as a task queue, not 26 gold obligations. Expand §§8–13 into atomic clauses including definitions, REC ownership/retirement, report filing, 2050 conjunctions and cost decisions. Run **two independent reviewers** without access to the AI suggestion sheet. Resolve disagreement with source-anchored justifications, then freeze the model-independent legal record.
+
+**Feasible integration sequence:** First reproduce the existing PyPSA-USA RPS share/zone aggregation on a pinned small model; check actual model variables and snapshot weights. Then introduce verified entity-specific retail-sales inputs, REC balances and conditional compliance, with explicit input contracts and fail-closed behavior. Prioritize comparative *error propagation* over fine-tuning on a tiny dataset.
+
+**Research evidence needed before claiming novelty or results:** an adjudicated inventory (and count of independent atomic duties), cross-jurisdiction held-out cases, pinned model/prompt provenance, replication of existing RPS constraint, independently validated IR/constraint tests, and paired baseline/perturbed model outcomes. **No such experimental validation is claimed in this codebook.**
+
