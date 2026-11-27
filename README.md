@@ -24,11 +24,11 @@ A follow-up AI review against the frozen NM 2025 statute found **one substantive
 
 **Coverage gaps:** 17.9.571.9 (conditional 2050 **100% zero-carbon** standard), 17.9.571.11 (REC ownership, transfers, four-year carry-forward and record retention) and 17.9.571.13 (annual report by **April 30**, reporting fields) require additional review. Initial follow-up queue has 12 topic-level tasks; many require decomposition into atomic obligations. Potential inconsistent internal references in 17.9.571.11(D)/(H) to 17.9.571.13 subsections are flagged as **source ambiguities**, not silently corrected. All new tasks remain AI-prepared and unadjudicated.
 
-## Annotation Codebook v1.0 — Policy-to-PyPSA (2026-11-27)
+## Annotation Codebook v1.1 — Legal Review + PyPSA Input/Compilation (2026-11-27)
 
-The [annotation codebook](docs/POLICY_TO_PYPSA_ANNOTATION_CODEBOOK_V1.md) now defines the complete proposed tagging protocol for legal semantic types, normalized policy fields, provenance/evidence offsets, multi-label compilation roles, model-specific executability decisions, source ambiguities, blinded Reviewer A/B annotation, and independent adjudication. It includes worked source-grounded examples for NM 2025 17.9.571.8–.13 and the annotation status/quality gates.
+The [annotation codebook v1.1](docs/POLICY_TO_PYPSA_ANNOTATION_CODEBOOK_V1.md) specifies two independent tracks: conventional legal/compliance annotation, and a concrete PyPSA input/compilation review. It defines source evidence, normalized legal fields, controlled labels, blinded reviewer/adjudicator workflows, typed intermediate representation, model profiles, source-to-variable bindings, external REC/retail-sales accounting, Linopy compilation routes, and pre-solve/post-solve validation gates. It includes worked source-grounded examples for NM 2025 17.9.571.8–.13 and the annotation status/quality gates.
 
-**Status:** codebook **proposed, not yet implemented** as the full Python schema/compiler and not yet human adjudicated; 14 original + 12 additional topic-level review tasks are **not 26 gold obligations**. The independently adjudicated gold count remains **0**. Current `schema.py`/`compiler.py` implement a narrower proof-of-concept; actual REC ledger and PyPSA integration are future implementation work.
+**Status:** codebook **proposed (v1.1), not yet implemented** as the full Python schema/compiler and not yet human adjudicated; 14 original + 12 additional topic-level review tasks are **not 26 gold obligations**. The independently adjudicated gold count remains **0**. Current `schema.py`/`compiler.py` implement a narrower proof-of-concept; actual REC ledger and PyPSA integration are future implementation work.
 
 ## Research question
 Can clean-energy policy language be converted into auditable, executable energy-system scenarios without silently changing its legal meaning?
