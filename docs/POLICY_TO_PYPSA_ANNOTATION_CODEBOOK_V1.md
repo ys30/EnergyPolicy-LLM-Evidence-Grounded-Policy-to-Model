@@ -1,6 +1,6 @@
-# Policy-to-PyPSA Annotation Codebook v1.0
+# Policy-to-PyPSA Annotation Codebook v1.1
 
-**Released:** 2026-11-27 | **Status:** PROPOSED — draft human-annotation protocol, **not** an adjudicated gold standard.
+**Updated:** 2026-11-27 (v1.1) | **Status:** PROPOSED — draft human-annotation protocol, **not** an adjudicated gold standard.
 
 **Project:** EnergyPolicy-LLM — Evidence-Grounded Policy-to-Model  
 **Current source materials:** Frozen `NM_COOP_2025.txt` (17.9.571 NMAC; source SHA-256 `673f60931b4a2ba68c2de2c67601097bc292da8998536bdb38b3d014acfdea01`) and `NM_2025_Policy_to_PyPSA_Reviewed_AI_Draft_Blind_Annotation.xlsx`.  
@@ -117,6 +117,124 @@ retired_eligible_REC_MWh_equivalent[u,y] >= target_fraction[y] * NM_retail_sales
 
 Before implementing it, review the legal relationship among retired certificates and qualifying electricity, supply responsibility, banking, certificate eligibility, exceptions, and compliance periods. **This expression is not yet a verified or directly deployable PyPSA constraint.** Never silently replace it with `local_renewable_generation / local_total_generation >= target`. The latter can at most be an explicitly labeled `SCENARIO_PROXY` when justified.
 
+### 4.4 Two independent review tracks: legal compliance and model compilation (v1.1 extension)
+
+**Track L — conventional legal/compliance review, independent of PyPSA.** The reviewer first checks the authoritative source, effective/version dates, scope and obligated entity, normative force, defined metrics, denominator, time basis, eligibility, certification/REC ownership and retirement, cost exceptions, conditions, cross-references, and reporting obligations. The result is a **semantic annotation** and a reviewer-specific interpretation, not yet model code. Conflicts or source errors must be flagged, not silently repaired.
+
+**Track M — PyPSA feasibility and compilation review, explicitly conditioned on `model_profile_id`.** A separate reviewer inventories the network, time resolution, variables, datasets, external accounting modules, mathematical feasibility, solver and numerical behavior. The result is a **model-mapping evaluation**, never a retroactive alteration of the legal meaning.
+
+| Gate | Mandatory question | PASS | FAIL / UNKNOWN |
+|---|---|---|---|
+| L1 Source | Is the exact original clause/version/offset reproducible? | Verified snapshot and evidence spans | Hold for source correction |
+| L2 Legal meaning | Are actor, obligation, calculation base, time and cross-provisions documented? | All relevant legal fields supported | `LEGAL_REVIEW_REQUIRED` |
+| L3 Conditions | Are permissions, cost thresholds and 2050 conditions preserved? | Explicit Boolean/temporal clauses | `SOURCE_AMBIGUITY` or `LEGAL_REVIEW_REQUIRED` |
+| M1 Network | Does the selected PyPSA network represent the actors, nodes, components and periods? | Concrete network and entity map | `MODEL_INPUT_MISSING` |
+| M2 Accounting | Are legal retail sales, REC eligibility, ownership, banking and retirement represented when necessary? | Verified external or integrated accounting system | `ACCOUNTING_MODULE_REQUIRED` |
+| M3 Equation | Does the intended equation use dimensionally compatible model symbols and preserve the legal metric? | Reviewed symbolic IR and variable map | `SEMANTIC_MISMATCH` |
+| M4 Execution | Does the test model build, solve and satisfy residual and unit checks? | Recorded test, solver status and tolerances | `SOLVE_FAILED` / `VALIDATION_FAILED` |
+| M5 Equivalence | Are L1–L3 and M1–M4 passed with no unsupported assumptions? | Candidate `LEGAL_CONSTRAINT` after review | Otherwise `SCENARIO_PROXY`, `ABSTAIN`, or `NOT_DIRECTLY_EXECUTABLE` |
+
+For annotation, keep `legal_review_status` and `model_validation_status` **separate**. A legally correct clause may be impossible to implement in a given network. A feasible optimization is **not proof of statutory compliance**.
+
+### 4.5 PyPSA input contract: model data and missing legal data
+
+Use a versioned `ModelProfile` manifest before making any `executability` decision. The table below describes practical inputs, not a claim that every model needs every component.
+
+| Input requirement | Typical PyPSA object / variable | Unit and temporal checks | When required / frequent mismatch |
+|---|---|---|---|
+| Network identity | `pypsa_version`, network `.nc` or built model, network hash | Version, topology and model revision | Always; model must be reproducible |
+| Topology and entity geography | `n.buses`, `n.lines`, `n.links`, `n.transformers`; external `utility_to_bus_map` | Actor→bus membership, multi-area boundaries, imports | Entity/scope requirements; **BA is not automatically a retail seller or cooperative** |
+| Carriers and eligibility | `n.carriers`, `n.generators.carrier`; external certified eligible-resource table | Eligible renewable vs zero-carbon taxonomy; plant ID and certification vintage | RPS, zero-carbon, historical resources; generic `carrier='wind'` is insufficient legal eligibility proof |
+| Demand and retail sales | `n.loads`, `n.loads_t.p_set`; **external `retail_sales_mwh[entity,year]`** | MW load vs MWh billed retail sales; losses, behind-the-meter, exports and ownership | Retail-sales denominator; dispatch load is **not automatically** statutory retail sales |
+| Dispatch and capacity | `n.generators`, `n.generators_t`, Linopy `Generator-p`, `Generator-p_nom` where applicable | MW vs MWh, fixed vs extendable capacity, availability `p_max_pu` | Energy-share proxy and capacity rules; dispatch does not identify who owns or retires RECs |
+| Storage and conversion | `n.storage_units`, `n.stores`, `n.links` and relevant dispatch variables | Round-trip losses, energy balance, charge/discharge double counting | Renewable/zero-carbon accounting must avoid treating storage discharge as new generation |
+| Time indexing | `n.snapshots`, `n.snapshot_weightings`; multi-period `investment_period_weightings` where relevant | Time zone; leap year; representative hours; MW × weighted hours = MWh; annual obligation vs model period | Required for every energy sum; do not confuse objective weights, generator energy weights and investment-year weights |
+| Price and costs | `capital_cost`, `marginal_cost`, network objective; **external CPI and statutory cost-basis fields** | Currency year, real vs nominal, USD/MWh denominator and recoverable cost | §10 reasonable-cost threshold cannot be inferred from optimization objective alone |
+| REC compliance ledger | **External or newly implemented** REC issue/owner/transfer/retirement/bank tables | MWh equivalence, vintage, location, double-count prevention, carry-forward limits | §8/§11 requirements; **not a native REC ownership/retirement ledger in an ordinary PyPSA network** |
+| Conditions and exception decisions | **External evidence/structured Boolean conditions** | Each condition's source, evaluation year, deciding authority and UNKNOWN state | §8(D), §9(A), §10; absent evidence must not silently become true |
+| Report obligation | External reporting record and compliance outputs; PyPSA results as supporting data | Reporting deadline vs target deadline; prior-year reference | §13; generally not a hard dispatch constraint |
+
+PyPSA components and optimization details are documented at:
+- [PyPSA network design and components](https://docs.pypsa.org/latest/user-guide/design/)
+- [PyPSA network optimization](https://docs.pypsa.org/latest/user-guide/network-optimization/)
+- [PyPSA custom constraints (Linopy)](https://docs.pypsa.org/latest/user-guide/optimization/custom-constraints/)
+- [Network.optimize API and extra_functionality](https://docs.pypsa.org/stable/api/networks/optimize/)
+- [PyPSA statistics and energy aggregation](https://docs.pypsa.org/latest/api/networks/statistics/)
+
+**Critical version check:** `Generator-p` and `Generator-p_nom` are indicative Linopy variable names and availability depends on network/model construction. Verify actual `n.model.variables` and component/coordinate names at runtime; never generate speculative code by relying on fixed names without checking.
+
+### 4.6 Required new compilation annotation fields
+
+| Field | Type / controlled values | Definition and reviewer instruction |
+|---|---|---|
+| `compilation_target` | `NATIVE_COMPONENT`, `LINOPY_CUSTOM_CONSTRAINT`, `EXTERNAL_ACCOUNTING`, `POSTPROCESSING`, `NO_DIRECT_COMPILATION`, `UNDETERMINED` | Actual destination of an atomic rule; multistage mappings may list several targets |
+| `model_profile_id` | Immutable versioned ID | Identifies concrete PyPSA version, network, data coverage, solver, and available compliance modules |
+| `model_scope` | entity IDs, buses, year(s), investment periods | The model coverage to which the rule is applied, not the statute's whole jurisdiction |
+| `policy_metric_id` | `NM_RETAIL_SALES_RPS`, `NM_ZERO_CARBON_RETAIL`, `REC_RETIREMENT`, `COST_USD_PER_MWH`, `REPORTING`, `OTHER` | Controlled legal metric. Must preserve renewable vs zero-carbon distinction |
+| `input_bindings[]` | list of `{symbol,source_object_or_dataset,dimension,unit,aggregation,provenance}` | Every symbolic term must resolve to an actual model variable or verified external table |
+| `missing_dependencies[]` | `RETAIL_SALES`, `ENTITY_MAP`, `REC_LEDGER`, `RESOURCE_ELIGIBILITY`, `CPI`, `COST_BASIS`, `CONDITION_EVIDENCE`, `TIME_COVERAGE`, `NONE`, `OTHER` | Specific blockers, not generic “data missing” |
+| `constraint_ir` | reviewed symbolic JSON/DSL or null | Typed equation with `lhs`, `sense`, `rhs`, `units`, `index_sets`; no raw LLM-produced executable Python |
+| `aggregation_method` | `FULL_HOURLY`, `WEIGHTED_SNAPSHOTS`, `YEARLY_EXTERNAL`, `MULTI_INVESTMENT_PERIOD`, `NOT_APPLICABLE` | How temporal or spatial aggregation is performed |
+| `constraint_class` | `LINEAR`, `MIXED_INTEGER`, `NONLINEAR_UNSUPPORTED`, `POSTPROCESS_ONLY`, `NOT_APPLICABLE` | Distinguish feasible LP/MILP from operations requiring other formulations |
+| `compile_readiness` | `READY`, `READY_PROXY_ONLY`, `BLOCKED_LEGAL`, `BLOCKED_INPUT`, `BLOCKED_FORMULATION`, `NOT_APPLICABLE`, `UNASSESSED` | Pre-solve readiness. Do **not** imply the optimization was actually run |
+| `validation_status` | `NOT_RUN`, `BUILD_PASSED`, `SOLVED`, `INFEASIBLE`, `SOLVER_ERROR`, `RESIDUAL_FAILED` | Evidence about actual execution; separately retain solver termination, objective, numerical tolerance |
+| `legal_equivalence` | true / false / null | True only after legal and computational acceptance gates; absent model verification → null |
+| `error_risk_type[]` | `WRONG_DENOMINATOR`, `WRONG_ENTITY`, `WRONG_ELIGIBILITY`, `REC_DOUBLE_COUNT`, `WRONG_YEAR`, `MISSED_CONDITION`, `COST_MISINTERPRETATION`, `SOURCE_AMBIGUITY`, `OTHER` | Mechanism for controlled policy-translation error experiments |
+| `human_compiler_review` | reviewer ID, date, rationale | Separate from legal Reviewer A/B; no fabricated approvals |
+
+Prefer **two separate decisions**: `compile_readiness` before model execution, and `validation_status` after execution. Treat `LEGAL_CONSTRAINT` as a stringent eventual result, not a synonym for “a constraint can be written.”
+
+### 4.7 Compilation pipeline: legal review → typed IR → PyPSA → verification
+
+1. **Standard legal review** produces atomic evidence-bound records, with legal entity, normative force, percentage/date, conditions, exceptions, legal source ambiguity and cross-reference edges.
+2. **Typed intermediate representation (IR)** encodes each operation without any PyPSA API calls. Examples: `share_minimum`, `certificate_retirement`, `eligibility_filter`, `conditional_activation`, `reporting_deadline`. Preserve `UNKNOWN` explicitly.
+3. **Input binding** checks exact entity keys, units and dataset identifiers. A legal retail-sales denominator requires external retail-sales data or a proven equivalent dataset. REC counting requires a designated accounting layer.
+4. **Static compilation** chooses `NATIVE_COMPONENT`, `LINOPY_CUSTOM_CONSTRAINT`, `EXTERNAL_ACCOUNTING`, `POSTPROCESSING` or `NO_DIRECT_COMPILATION`. Reject unsupported or non-linear formulations in the chosen LP workflow.
+5. **Solver execution** uses a pinned PyPSA/Linopy/solver environment. PyPSA documents either `n.optimize(extra_functionality=callback)` or `n.optimize.create_model(); n.model.add_constraints(...); n.optimize.solve_model()`. The callback signature is `callback(n, snapshots)`. Generated constraint names and mathematical residuals must be inspected.
+6. **Postsolve verification** recomputes policy quantities from solution/output and external ledgers, checks consistency and numerical tolerances, and records feasibility. Report `LEGAL_CONSTRAINT` only if conventional legal review and computational checks both support it.
+7. **Counterfactual evaluation** compares baseline vs policy runs on the *same* model/data and isolates policy-translation errors from unrelated scenario changes. Track objective cost, capacity, dispatch, curtailment, emissions, compliance gap, and infeasibility. Do not describe these as empirical findings until actually run.
+
+### 4.8 Decision examples for the NM 2025 pilot
+
+| Provision | Track L (conventional review) | Track M (model input / formulation) | Recommended pre-execution label |
+|---|---|---|---|
+| 8(A), REC retirement | Confirm certificate retirement and entity obligations | `EXTERNAL_ACCOUNTING`; REC ledger absent in ordinary dispatch-only PyPSA | `BLOCKED_INPUT` unless ledger supplied |
+| 8(C), 2030 50% | Confirm retail-sales denominator, qualifying REC accounting, supply responsibility 8(F)(2) | Requires `retail_sales_mwh`, entity map, REC eligible/retired quantities, annual coverage | `BLOCKED_INPUT`; explicit generation-share scenario can instead be `READY_PROXY_ONLY` |
+| 8(D), 2050 conditional 80% | Three jointly required conditions | Structured condition evidence + 2050 model data + REC and retail-sales coverage | `BLOCKED_INPUT` or `BLOCKED_LEGAL` if unresolved meaning |
+| 9(A), 2050 100% zero-carbon | Preserve zero-carbon ≠ renewable and three conditions | Zero-carbon resource eligibility table independent of renewable label | `BLOCKED_INPUT` until eligibility/conditions available |
+| 10(A), $60/MWh | Cooperative annually decides applicability; inflation and statutory cost metric | CPI and true cost basis; optimization objective alone is insufficient | `BLOCKED_INPUT`; do not generate arbitrary cost cap |
+| 11(D)/(H), suspect cross-reference | Preserve literal source reference and `CROSS_REFERENCE_MISMATCH` | Do not automatically reroute to §11 | `BLOCKED_LEGAL` for the affected relation |
+| 13(A), April 30 filing | Report covers prior calendar year | `POSTPROCESSING` output + filing metadata | `NOT_APPLICABLE` for standalone LP constraint; reporting task remains valid |
+
+### 4.9 Machine-readable example of a **proposed** intermediate representation
+
+```json
+{
+  "annotation_id": "NM25-009-TARGET",
+  "legal_review_status": "PENDING_HUMAN_ADJUDICATION",
+  "policy_metric_id": "NM_RETAIL_SALES_RPS",
+  "ir": {
+    "operator": "share_minimum",
+    "scope": "regulated_entity_and_compliance_year",
+    "target_fraction": 0.50,
+    "year": 2030,
+    "denominator": {"symbol": "NM_retail_sales_MWh", "source": "EXTERNAL_UNBOUND"},
+    "numerator": {"symbol": "eligible_retired_REC_MWh_equivalent", "source": "EXTERNAL_UNBOUND"},
+    "depends_on_provisions": ["17.9.571.8(A)", "17.9.571.8(F)(2)", "17.9.571.11"]
+  },
+  "compilation_target": ["EXTERNAL_ACCOUNTING", "LINOPY_CUSTOM_CONSTRAINT"],
+  "model_profile_id": "UNSET",
+  "missing_dependencies": ["RETAIL_SALES", "ENTITY_MAP", "REC_LEDGER", "RESOURCE_ELIGIBILITY"],
+  "compile_readiness": "BLOCKED_INPUT",
+  "validation_status": "NOT_RUN",
+  "legal_equivalence": null,
+  "annotation_status": "AI_DRAFT",
+  "gold_eligible": false
+}
+```
+
+The IR intentionally contains **no executable Python**. `LINOPY_CUSTOM_CONSTRAINT` is a *potential* integration path only after verifying every binding and accounting decision. This is a design specification, not an implemented PyPSA compiler or executed test.
+
 ## 5. Quality labels, independent blinded review, and gold-standard freeze
 
 | Field | Allowed values | Application |
@@ -203,4 +321,4 @@ Before implementing it, review the legal relationship among retired certificates
 
 ## 10. Version control and change management
 
-This v1.0 defines labels and review procedures only. If subsequent research reveals that the schema cannot faithfully represent a legal clause in 17.9.571, release an updated codebook and explicit migration guidance; **never silently revise adjudicated labels**. Prioritize pilot reliability testing on 8(F) responsibilities, 9(A) conditional applicability, 10(A) cost exceptions, and the apparent 11(D)/(H) source cross-reference ambiguity. All examples remain non-gold until independent human adjudication.
+Version v1.1 extends v1.0 with a two-track conventional review and PyPSA compilation protocol, a required input contract, typed IR, and pre-solve/post-solve acceptance gates. This document defines labels and procedures only. If subsequent research reveals that the schema cannot faithfully represent a legal clause in 17.9.571, release an updated codebook and explicit migration guidance; **never silently revise adjudicated labels**. Prioritize pilot reliability testing on 8(F) responsibilities, 9(A) conditional applicability, 10(A) cost exceptions, and the apparent 11(D)/(H) source cross-reference ambiguity. All examples remain non-gold until independent human adjudication.
