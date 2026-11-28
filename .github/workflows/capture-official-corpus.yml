@@ -61,6 +61,8 @@ jobs:
               print("OUTSIDE_SECTION_SAMPLES", source["source_id"], json.dumps(audit["keyword_lines_outside_matched_sections"][:18], ensure_ascii=False))
           print("Both source snapshots and exact candidate spans verified")
           PY
+      - name: Audit real source RAG chunks, evidence offsets and cross references
+        run: python scripts/audit_official_rag.py
       - name: Upload evidence artifacts (not gold labels)
         if: success()
         uses: actions/upload-artifact@v4
