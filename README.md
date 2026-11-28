@@ -62,6 +62,10 @@ Run `python scripts/demo_rec_accounting.py` after installing the project.
 
 **New Legal RAG v1:** [architecture and runbook](docs/LEGAL_RAG_V1.md) · [source-anchored chunker](src/energy_policy_llm/legal_chunker.py) · [lexical reference graph](src/energy_policy_llm/reference_graph.py) · [BM25 retriever](src/energy_policy_llm/retrievers.py) · [evidence bundle](src/energy_policy_llm/evidence_bundle.py) · [guarded retrieval metrics](src/energy_policy_llm/rag_evaluation.py). The [official source capture workflow](.github/workflows/capture-official-corpus.yml) now invokes `scripts/audit_official_rag.py` and uploads a RAG audit when successful. **RAG CI verification is pending**; no embedding/vector/hybrid or LLM experiments have been executed, and no human Gold corpus exists.
 
+## Hybrid RAG v1.1 — optional embeddings + source-bound field evidence (2026-11-28)
+
+Added [RRF hybrid retrieval](src/energy_policy_llm/hybrid_retrieval.py) and [field-level source evidence validation](src/energy_policy_llm/field_evidence.py), with [regression tests](tests/test_hybrid_field_evidence.py) and a [reproducibility guide](docs/HYBRID_RAG_FIELD_EVIDENCE_V11.md). BM25 works without external models; actual semantic embeddings require a selected, logged optional encoder. Mocked vectors in tests validate fusion mechanics **only**—they are not real semantic retrieval benchmark results. Citation checks enforce frozen-source SHA, exact character spans and membership in retrieved evidence; passing a quote check is **not** legal semantic adjudication. The human gold count remains 0.
+
 ## Research question
 Can clean-energy policy language be converted into auditable, executable energy-system scenarios without silently changing its legal meaning?
 
