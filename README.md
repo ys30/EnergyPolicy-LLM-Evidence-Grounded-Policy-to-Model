@@ -56,6 +56,12 @@ Run `python scripts/demo_rec_accounting.py` after installing the project.
 
 [Small 4-hour PyPSA + HiGHS experiment](src/energy_policy_llm/pypsa_synthetic_experiment.py) · [reproduction guide](docs/PYPSA_SYNTHETIC_SOLVER_INTEGRATION_V1.md) · [integration workflow](.github/workflows/pypsa-synthetic-integration.yml). The independent workflow installs `pypsa==1.4.0` and HiGHS, then attempts two **actual** network optimizations: unconstrained fossil dispatch and an explicitly nonlegal 50% local-renewable-generation proxy. A separate synthetic REC ledger evaluates an independent 5 MWh illustrative shortfall. Until this integration workflow reports success, values in the guide are **expected fixture values only**, not verified solver output. The synthetic system is not an NM legal compliance model and does not imply validated policy impacts or human Gold.
 
+## Legal RAG v1 + PyPSA solver CI repair (2026-11-28)
+
+**Verified PyPSA fix:** The original [integration run](https://github.com/ys30/EnergyPolicy-LLM-Evidence-Grounded-Policy-to-Model/actions/runs/46121128489) failed because PyPSA 1.4.0 / linopy uses the `name` dimension, not `Generator`, for the dispatch variable. After correction, [integration run 46123194124](https://github.com/ys30/EnergyPolicy-LLM-Evidence-Grounded-Policy-to-Model/actions/runs/46123194124) **succeeded** with actual HiGHS optimal solves: synthetic baseline cost 1000 vs nonlegal local generation proxy cost 2500; independent hypothetical REC shortfall remains 5 MWh in both. **These are simulated fixtures, not real NM policy effects or verified legal compliance.**
+
+**New Legal RAG v1:** [architecture and runbook](docs/LEGAL_RAG_V1.md) · [source-anchored chunker](src/energy_policy_llm/legal_chunker.py) · [lexical reference graph](src/energy_policy_llm/reference_graph.py) · [BM25 retriever](src/energy_policy_llm/retrievers.py) · [evidence bundle](src/energy_policy_llm/evidence_bundle.py) · [guarded retrieval metrics](src/energy_policy_llm/rag_evaluation.py). The [official source capture workflow](.github/workflows/capture-official-corpus.yml) now invokes `scripts/audit_official_rag.py` and uploads a RAG audit when successful. **RAG CI verification is pending**; no embedding/vector/hybrid or LLM experiments have been executed, and no human Gold corpus exists.
+
 ## Research question
 Can clean-energy policy language be converted into auditable, executable energy-system scenarios without silently changing its legal meaning?
 
