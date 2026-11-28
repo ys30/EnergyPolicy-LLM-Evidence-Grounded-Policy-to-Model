@@ -10,7 +10,7 @@ from energy_policy_llm.compiler_v2 import compile_policy
 from energy_policy_llm.model_profile import synthetic_profile
 
 TEXT="""17.9.571.8 RENEWABLE PORTFOLIO:
-        C. By 2030, fifty percent of New Mexico retail sales must be renewable.
+        C. A distribution cooperative: By 2030, fifty percent of New Mexico retail sales must be renewable.
 17.9.571.11 CERTIFICATES:
         D. WREGIS rules refer to 17.9.571.13(E).
 17.9.571.13 REPORTS:
@@ -31,7 +31,7 @@ class RagToIrTests(unittest.TestCase):
         self.citations=(
             cite("legal_type","must be renewable"),
             cite("metric","retail sales"),
-            cite("entity_id","New Mexico"),
+            cite("entity_id","distribution cooperative"),
             cite("year","2030"),
             cite("target_fraction","fifty percent"))
         self.draft=ProposedPolicyFields("AI-2030","17.9.571.8","TARGET",
@@ -47,6 +47,17 @@ class RagToIrTests(unittest.TestCase):
         self.assertFalse(result.policy_ir.human_adjudicated)
         out=compile_policy(result.policy_ir,synthetic_profile(full=True))
         self.assertEqual(out.status,"ABSTAIN")
+
+    def test_true_quote_can_still_fail_entity_semantics(self):
+        # Exact quote exists but "New Mexico" does not establish the entity.
+        old=self.citations[2]
+        start=TEXT.index("New Mexico",self.sub.start_char,self.sub.end_char)
+        incorrect=replace(old,start_char=start,end_char=start+len("New Mexico"),
+                          exact_text="New Mexico")
+        draft=replace(self.draft,field_evidence=(*self.citations[:2],incorrect,*self.citations[3:]))
+        out=validate_proposed_policy(TEXT,self.bundle,draft)
+        self.assertEqual(out.status,"ABSTAIN")
+        self.assertIn("ENTITY_SUPPORT_NOT_VISIBLE",str(out.reasons))
 
     def test_missing_field_and_bad_quote(self):
         missing=replace(self.draft,field_evidence=self.citations[:-1])
