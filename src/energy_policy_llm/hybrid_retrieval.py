@@ -23,12 +23,13 @@ def cosine(a: Vector, b: Vector) -> float:
 
 class SentenceTransformerEncoder:
     """Optional local semantic model; not instantiated in lightweight CI."""
-    def __init__(self, model_id: str):
+    def __init__(self, model_id: str, revision: str | None = None):
         if not model_id:
-            raise ValueError("Pin a semantic encoder ID")
+            raise ValueError("Provide a semantic encoder ID")
         from sentence_transformers import SentenceTransformer
         self.model_id=model_id
-        self.model=SentenceTransformer(model_id)
+        self.revision=revision
+        self.model=SentenceTransformer(model_id, revision=revision)
     def __call__(self, texts: list[str]) -> list[list[float]]:
         return self.model.encode(texts, normalize_embeddings=True,
                                  show_progress_bar=False).tolist()
