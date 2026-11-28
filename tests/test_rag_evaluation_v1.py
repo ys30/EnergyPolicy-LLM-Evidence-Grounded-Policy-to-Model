@@ -15,7 +15,7 @@ class RetrievalEvalTests(unittest.TestCase):
         self.retriever=BM25LegalRetriever([c for c in self.chunks if c.subsection])
 
     def test_synthetic_recall(self):
-        case=RetrievalCase("s1","fifty percent retail","SYN:17.9.571.8:B".split("|") and frozenset({"SYN:17.9.571.8:B"}),"SYN")
+        case=RetrievalCase("s1","fifty percent retail",frozenset({"SYN:17.9.571.8:B"}),"SYN")
         out=evaluate_retrieval(self.retriever,[case],k=1)
         self.assertEqual(out["mean_recall_at_k"],1.0)
         self.assertFalse(out["formal_human_gold"])
