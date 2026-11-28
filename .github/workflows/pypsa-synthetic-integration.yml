@@ -1,0 +1,36 @@
+name: pypsa-synthetic-integration
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'src/energy_policy_llm/pypsa_synthetic_experiment.py'
+      - 'src/energy_policy_llm/rec_accounting.py'
+      - 'scripts/run_pypsa_synthetic_experiment.py'
+      - 'tests/test_pypsa_synthetic_experiment.py'
+      - '.github/workflows/pypsa-synthetic-integration.yml'
+permissions:
+  contents: read
+jobs:
+  pypsa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install project and pinned optional solver dependencies
+        run: |
+          python -m pip install -e .
+          python -m pip install 'pypsa==1.4.0' 'highspy>=1.11,<2'
+      - name: Test actual PyPSA solves
+        run: python -m unittest tests.test_pypsa_synthetic_experiment -v
+      - name: Execute and save synthetic experiment
+        run: python scripts/run_pypsa_synthetic_experiment.py
+      - name: Upload solver outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: pypsa-synthetic-solver-results
+          path: outputs/pypsa_synthetic/experiment_results.json
+          retention-days: 14
+          if-no-files-found: error
