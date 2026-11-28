@@ -20,6 +20,8 @@ jobs:
       - name: Install project and real semantic encoder
         run: |
           python -m pip install -e .
+          # CPU-only PyTorch avoids multi-GB CUDA wheels on the hosted runner.
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu 'torch>=2.4,<3'
           python -m pip install 'sentence-transformers>=3.4,<6' 'huggingface_hub>=0.28,<2'
       - name: Capture and verify official statutes
         run: python scripts/capture_corpus_ci.py
