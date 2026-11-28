@@ -31,7 +31,8 @@ def _network():
     n.set_snapshots(pd.date_range("2030-01-01", periods=4, freq="h"))
     n.add("Carrier", "renewable")
     n.add("Carrier", "fossil")
-    n.add("Bus", "synthetic_bus")
+    n.add("Carrier", "electricity")
+    n.add("Bus", "synthetic_bus", carrier="electricity")
     # 25 MW for four 1-hour steps -> 100 MWh simulated energy.
     n.add("Load", "synthetic_load", bus="synthetic_bus", p_set=25.0)
     n.add("Generator", "renewable", bus="synthetic_bus", carrier="renewable",
@@ -46,7 +47,7 @@ def solve_scenario(*, generation_share_proxy: bool) -> SolverScenario:
         def add_nonlegal_share_constraint(network, snapshots):
             """Illustrative forced local-generation ratio; no REC/retail input."""
             dispatch = network.model.variables["Generator-p"]
-            renewable = dispatch.sel(Generator="renewable").sum()
+            renewable = dispatch.sel(name="renewable").sum()
             # Here all load is met locally with no losses or imports: 100 MWh.
             total_load_mwh = 25.0 * len(snapshots)
             network.model.add_constraints(
