@@ -67,6 +67,26 @@ class HybridRetriever:
             raise ValueError("Embedding dimension or finiteness invalid")
         return vectors
 
+    def semantic_search(self, query: str, k: int = 5, *, source_id: str | None = None) -> list[HybridHit]:
+        """Embedding-only baseline, with the same corpus and model as RRF."""
+        if self.encoder is None:
+            raise ValueError("Real semantic encoder is not configured")
+        if k < 1:
+            raise ValueError("k must be positive")
+        if not query.strip():
+            return []
+        qv=self._encode([query])[0]
+        scored=[]
+        for chunk,vector in zip(self.chunks,self.vectors):
+            if source_id is not None and chunk.source_id != source_id:
+                continue
+            score=cosine(qv,vector)
+            if score > 0:
+                scored.append((score,chunk.chunk_id,chunk))
+        scored.sort(key=lambda row:(-row[0],row[1]))
+        return [HybridHit(chunk, score, rank, ("EMBEDDING",))
+                for rank,(score,_,chunk) in enumerate(scored[:k],1)]
+
     def search(self, query: str, k: int = 5, *, source_id: str | None = None) -> list[HybridHit]:
         if k < 1:
             raise ValueError("k must be positive")
