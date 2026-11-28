@@ -40,6 +40,12 @@ Statuses are `AI_AGREED`/`AI_DISAGREED` for AI-only comparison, `HUMAN_VERIFIED`
 
 [Five-clause pilot report](docs/FIVE_CLAUSE_ANNOTATION_PILOT_V1.md) · [versioned AI pilot records](data/policies/nm_coop_five_clause_pilot_v1.json). Five sections of frozen NM cooperative law — **8(B), 8(D), 9(A), 10(A), 11(D)** — have verified exact char offsets and Codebook-v1 semantic tags. The pilot separates source-cited legal extraction, model-specific executability and incomplete/ambiguous cross-references. All 5 remain **AI suggestions, not two independently annotated records**; `gold_count=0`. No PyPSA solve or empirical LLM benchmark is claimed. The review workbook was delivered separately in the conversation; source snapshots remain an expiring GitHub Actions artifact rather than committed full text.
 
+## Compiler v2 — synthetic model-capability gate (2026-11-27)
+
+Implemented [ModelProfile](src/energy_policy_llm/model_profile.py), [PolicyIR](src/energy_policy_llm/policy_ir.py) and a [fail-closed compiler v2](src/energy_policy_llm/compiler_v2.py), plus [synthetic regression tests](tests/test_policy_to_model_v2.py), a [runnable synthetic demo](scripts/demo_compiler_v2.py) and [documentation](docs/POLICY_COMPILER_V2_SYNTHETIC_PILOT.md). The model-profile capabilities explicitly distinguish retail sales and REC tracking from local generation; an illustrative generation-share proxy requires explicit opt-in. Conditional legal rules and unverified/ambiguous evidence cannot silently become executable constraints. **The output is a compilation plan only; no PyPSA solve, legal-equivalent model, human-gold annotation or formal LLM experiment has been completed.**
+
+Run `python scripts/demo_compiler_v2.py` after installation.
+
 ## Research question
 Can clean-energy policy language be converted into auditable, executable energy-system scenarios without silently changing its legal meaning?
 
