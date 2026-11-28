@@ -66,6 +66,10 @@ Run `python scripts/demo_rec_accounting.py` after installing the project.
 
 Added [RRF hybrid retrieval](src/energy_policy_llm/hybrid_retrieval.py) and [field-level source evidence validation](src/energy_policy_llm/field_evidence.py), with [regression tests](tests/test_hybrid_field_evidence.py) and a [reproducibility guide](docs/HYBRID_RAG_FIELD_EVIDENCE_V11.md). BM25 works without external models; actual semantic embeddings require a selected, logged optional encoder. Mocked vectors in tests validate fusion mechanics **only**—they are not real semantic retrieval benchmark results. Citation checks enforce frozen-source SHA, exact character spans and membership in retrieved evidence; passing a quote check is **not** legal semantic adjudication. The human gold count remains 0.
 
+## Official real-embedding retrieval pilot — model revision resolved at run time (2026-11-28)
+
+The [real-embedding GitHub Actions workflow](.github/workflows/hybrid-rag-real-embeddings.yml) now installs a genuine sentence-transformer, resolves its immutable Hugging Face revision, captures official NM statutes and writes a [four-arm diagnostic](scripts/run_official_hybrid_rag.py): BM25, embedding-only, hybrid RRF and BM25 with structure-aware evidence expansion. See [experiment protocol](docs/HYBRID_RAG_REAL_ENCODER_PILOT.md). Five preselected provision probes are **AI-seeded smoke checks, not human relevance gold**. Provenance reports model revision, exact source SHA and ranked chunk IDs. These runs require model download and network access; **no results should be claimed until a workflow succeeds and its JSON artifact is inspected**. The source-independent [retrieval regression suite](tests/test_hybrid_field_evidence.py) checks the semantic-only arm separately. Human Gold = 0; no LLM prediction benchmark or legal-compliance effects are claimed.
+
 ## Research question
 Can clean-energy policy language be converted into auditable, executable energy-system scenarios without silently changing its legal meaning?
 
