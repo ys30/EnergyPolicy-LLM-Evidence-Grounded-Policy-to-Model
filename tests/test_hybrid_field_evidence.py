@@ -36,6 +36,17 @@ class HybridEvidenceTests(unittest.TestCase):
         self.assertIn("BM25",hits[0].channels)
         self.assertIn("EMBEDDING",hits[0].channels)
 
+    def test_embedding_only_has_separate_channel_and_source_filter(self):
+        def mock_encoder(texts):
+            return [(1.,0.) if "fifty" in t or "2030" in t else (0.,1.) for t in texts]
+        retriever=HybridRetriever(self.subs,encoder=mock_encoder,encoder_id="MOCK_TEST_ONLY")
+        hits=retriever.semantic_search("fifty percent",k=2,source_id="NM_COOP")
+        self.assertEqual(hits[0].chunk.subsection,"C")
+        self.assertEqual(hits[0].channels,("EMBEDDING",))
+        self.assertEqual(retriever.semantic_search("fifty",k=3,source_id="OTHER"),[])
+        with self.assertRaisesRegex(ValueError,"semantic encoder"):
+            HybridRetriever(self.subs).semantic_search("fifty")
+
     def test_embedding_requires_model_provenance(self):
         with self.assertRaises(ValueError):
             HybridRetriever(self.subs,encoder=lambda xs: [(1.,)]*len(xs))
