@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from .evidence_bundle import EvidenceBundle
 from .field_evidence import FieldEvidence,validate_field_evidence
 from .policy_ir import PolicyIR, LegalType, MetricV2
+from .field_semantic_screen import screen_field_semantics
 
 @dataclass(frozen=True)
 class ProposedPolicyFields:
@@ -78,6 +79,13 @@ def validate_proposed_policy(text: str, bundle: EvidenceBundle,
     problems.extend(ch.field_name+":"+ch.reason for ch in checks if ch.status=="REJECT")
     if problems:
         return DraftBridgeResult("ABSTAIN",tuple(problems),None,tuple(names))
+    semantic_flags=screen_field_semantics(
+        candidate,evidence_text_by_field={item.field_name:item.exact_text for item in fields})
+    if semantic_flags:
+        return DraftBridgeResult(
+            "ABSTAIN",
+            tuple("SEMANTIC_REVIEW_REQUIRED:"+f.field_name+":"+f.code for f in semantic_flags),
+            None,tuple(names))
     try:
         ir=PolicyIR(annotation_id=candidate.annotation_id,
             source_sha256=bundle.source_sha256,provision=candidate.provision,
