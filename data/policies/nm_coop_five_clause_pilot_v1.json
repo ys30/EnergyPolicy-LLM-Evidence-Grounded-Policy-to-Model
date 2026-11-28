@@ -1,0 +1,110 @@
+{
+  "codebook_version": "1.0",
+  "source_id": "NM_COOP_2025",
+  "source_sha256": "673f60931b4a2ba68c2de2c67601097bc292da8998536bdb38b3d014acfdea01",
+  "source_version": "2025-06-24",
+  "model_profile_id": "UNSET",
+  "gold_count": 0,
+  "workflow": "AI pilot only; reviewer A/B and adjudication remain empty",
+  "records": [
+    {
+      "annotation_id": "NM-PILOT-8B",
+      "provision": "17.9.571.8(B)",
+      "start_char": 5718,
+      "end_char": 5903,
+      "legal_semantic_type": "TARGET",
+      "normative_force": "MUST",
+      "target_fraction": 0.4,
+      "target_date": "2025-01-01",
+      "compilation_roles": [
+        "PARAMETER",
+        "ACCOUNTING_CONSTRAINT",
+        "ENTITY_MAPPING"
+      ],
+      "executability_draft": "UNASSESSED",
+      "review_note": "Retail-sales denominator; cross-reference G&T responsibility in 8(F)(2)",
+      "annotation_origin": "AI_SUGGESTION",
+      "annotation_status": "READY_FOR_BLIND_REVIEW",
+      "gold_eligible": false
+    },
+    {
+      "annotation_id": "NM-PILOT-8D",
+      "provision": "17.9.571.8(D)",
+      "start_char": 6094,
+      "end_char": 6738,
+      "legal_semantic_type": "CONDITIONAL_TARGET",
+      "normative_force": "CONDITIONAL_MUST",
+      "target_fraction": 0.8,
+      "target_date": "2050-01-01",
+      "compilation_roles": [
+        "PARAMETER",
+        "CONDITIONAL_LOGIC",
+        "ENTITY_MAPPING"
+      ],
+      "executability_draft": "ABSTAIN",
+      "review_note": "ALL of technical feasibility, reliability, affordability must be satisfied",
+      "annotation_origin": "AI_SUGGESTION",
+      "annotation_status": "READY_FOR_BLIND_REVIEW",
+      "gold_eligible": false
+    },
+    {
+      "annotation_id": "NM-PILOT-9A",
+      "provision": "17.9.571.9(A)",
+      "start_char": 7955,
+      "end_char": 8620,
+      "legal_semantic_type": "CONDITIONAL_TARGET",
+      "normative_force": "CONDITIONAL_MUST",
+      "target_fraction": 1,
+      "target_date": "2050-01-01",
+      "compilation_roles": [
+        "PARAMETER",
+        "CONDITIONAL_LOGIC",
+        "ELIGIBILITY_RULE"
+      ],
+      "executability_draft": "ABSTAIN",
+      "review_note": "Zero-carbon standard distinct from renewable; three conjunctive conditions",
+      "annotation_origin": "AI_SUGGESTION",
+      "annotation_status": "READY_FOR_BLIND_REVIEW",
+      "gold_eligible": false
+    },
+    {
+      "annotation_id": "NM-PILOT-10A",
+      "provision": "17.9.571.10(A)",
+      "start_char": 9340,
+      "end_char": 10143,
+      "legal_semantic_type": "COST_EXCEPTION",
+      "normative_force": "CONDITIONAL_MUST",
+      "target_fraction": null,
+      "target_date": null,
+      "compilation_roles": [
+        "PARAMETER",
+        "COST_EXCEPTION_LOGIC"
+      ],
+      "executability_draft": "ABSTAIN",
+      "review_note": "Cooperative annually determines levelized cost; 60 USD/MWh threshold indexed after 2020; no later-year delay",
+      "annotation_origin": "AI_SUGGESTION",
+      "annotation_status": "READY_FOR_BLIND_REVIEW",
+      "gold_eligible": false
+    },
+    {
+      "annotation_id": "NM-PILOT-11D",
+      "provision": "17.9.571.11(D)",
+      "start_char": 13682,
+      "end_char": 14081,
+      "legal_semantic_type": "ACCOUNTING",
+      "normative_force": "MUST",
+      "target_fraction": null,
+      "target_date": null,
+      "compilation_roles": [
+        "ACCOUNTING_CONSTRAINT",
+        "REPORTING_ONLY",
+        "UNRESOLVED"
+      ],
+      "executability_draft": "ABSTAIN",
+      "review_note": "Preserve cross references 17.9.571.13(E)/(B) as possible source ambiguity",
+      "annotation_origin": "AI_SUGGESTION",
+      "annotation_status": "READY_FOR_BLIND_REVIEW",
+      "gold_eligible": false
+    }
+  ]
+}
