@@ -36,6 +36,10 @@ The [annotation codebook v1.3](docs/POLICY_TO_PYPSA_ANNOTATION_CODEBOOK_V1.md) s
 
 Statuses are `AI_AGREED`/`AI_DISAGREED` for AI-only comparison, `HUMAN_VERIFIED` for explicitly signed single-human review, and `EXPERT_REVIEW_REQUIRED` for unresolved matters. The existing [two-independent-human gold gate](src/energy_policy_llm/annotations.py) stays unchanged; `human_verified_reference_count` and `independently_adjudicated_gold_count` are separate. **Current real human-verified count = 0; independent gold count = 0; no two real model inference runs have been executed by these new utilities.** Synthetic unit tests do not count as annotation experiments. Details: [Codebook v1.3 §12](docs/POLICY_TO_PYPSA_ANNOTATION_CODEBOOK_V1.md#12-approved-alternative-pilot-protocol-two-independent-llms--one-human-v13).
 
+## Five-clause Codebook pilot — source-checked AI drafts (2026-11-27)
+
+[Five-clause pilot report](docs/FIVE_CLAUSE_ANNOTATION_PILOT_V1.md) · [versioned AI pilot records](data/policies/nm_coop_five_clause_pilot_v1.json). Five sections of frozen NM cooperative law — **8(B), 8(D), 9(A), 10(A), 11(D)** — have verified exact char offsets and Codebook-v1 semantic tags. The pilot separates source-cited legal extraction, model-specific executability and incomplete/ambiguous cross-references. All 5 remain **AI suggestions, not two independently annotated records**; `gold_count=0`. No PyPSA solve or empirical LLM benchmark is claimed. The review workbook was delivered separately in the conversation; source snapshots remain an expiring GitHub Actions artifact rather than committed full text.
+
 ## Research question
 Can clean-energy policy language be converted into auditable, executable energy-system scenarios without silently changing its legal meaning?
 
