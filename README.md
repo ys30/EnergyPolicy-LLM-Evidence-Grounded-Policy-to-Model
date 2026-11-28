@@ -52,6 +52,10 @@ Added [illustrative REC accounting](src/energy_policy_llm/rec_accounting.py), [m
 
 Run `python scripts/demo_rec_accounting.py` after installing the project.
 
+## Optional real PyPSA solver integration — synthetic inputs (2026-11-28)
+
+[Small 4-hour PyPSA + HiGHS experiment](src/energy_policy_llm/pypsa_synthetic_experiment.py) · [reproduction guide](docs/PYPSA_SYNTHETIC_SOLVER_INTEGRATION_V1.md) · [integration workflow](.github/workflows/pypsa-synthetic-integration.yml). The independent workflow installs `pypsa==1.4.0` and HiGHS, then attempts two **actual** network optimizations: unconstrained fossil dispatch and an explicitly nonlegal 50% local-renewable-generation proxy. A separate synthetic REC ledger evaluates an independent 5 MWh illustrative shortfall. Until this integration workflow reports success, values in the guide are **expected fixture values only**, not verified solver output. The synthetic system is not an NM legal compliance model and does not imply validated policy impacts or human Gold.
+
 ## Research question
 Can clean-energy policy language be converted into auditable, executable energy-system scenarios without silently changing its legal meaning?
 
