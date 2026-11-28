@@ -1,6 +1,6 @@
-# Policy-to-PyPSA Annotation Codebook v1.2
+# Policy-to-PyPSA Annotation Codebook v1.3
 
-**Updated:** 2026-11-27 (v1.2) | **Status:** PROPOSED — draft human-annotation protocol, **not** an adjudicated gold standard.
+**Updated:** 2026-11-27 (v1.3) | **Status:** PROPOSED — draft human-annotation protocol, **not** an adjudicated gold standard.
 
 **Project:** EnergyPolicy-LLM — Evidence-Grounded Policy-to-Model  
 **Current source materials:** Frozen `NM_COOP_2025.txt` (17.9.571 NMAC; source SHA-256 `673f60931b4a2ba68c2de2c67601097bc292da8998536bdb38b3d014acfdea01`) and `NM_2025_Policy_to_PyPSA_Reviewed_AI_Draft_Blind_Annotation.xlsx`.  
@@ -410,4 +410,80 @@ Separate **legal interpretation fidelity**, **aggregation accuracy**, **solvabil
 **Feasible integration sequence:** First reproduce the existing PyPSA-USA RPS share/zone aggregation on a pinned small model; check actual model variables and snapshot weights. Then introduce verified entity-specific retail-sales inputs, REC balances and conditional compliance, with explicit input contracts and fail-closed behavior. Prioritize comparative *error propagation* over fine-tuning on a tiny dataset.
 
 **Research evidence needed before claiming novelty or results:** an adjudicated inventory (and count of independent atomic duties), cross-jurisdiction held-out cases, pinned model/prompt provenance, replication of existing RPS constraint, independently validated IR/constraint tests, and paired baseline/perturbed model outcomes. **No such experimental validation is claimed in this codebook.**
+
+
+## 12. Approved alternative pilot protocol: Two Independent LLMs + One Human (v1.3)
+
+**Protocol ID:** `DUAL_LLM_SINGLE_HUMAN_VERIFICATION`  
+**Status:** Proposed as the primary *pilot* annotation workflow; does not retroactively reclassify previous ChatGPT drafts or create independently human-adjudicated gold labels. This **supersedes the two-independent-human-reviewer requirement in Sections 5, 8, 9 and 11.5 only for records explicitly using this alternative protocol**. The original `TWO_HUMAN_INDEPENDENT_ADJUDICATION` protocol remains available and is preferred for an independently annotated evaluation subset.
+
+### 12.1 Annotators, roles and independence
+
+| Role | Role ID | Minimum requirements | What cannot be claimed |
+|---|---|---|---|
+| LLM A | `AI_A` | A real, pinned model ID/version, prompt hash, timestamp, frozen source text/hash, field and evidence outputs | Not a human reviewer |
+| LLM B | `AI_B` | Independently generated outputs using a distinct pinned model identity; must not see A's outputs or AI suggestions | Not a second human reviewer; a different prompt alone is not model-family independence |
+| Programmatic validator | `STATIC_VALIDATOR` | Verify source hashes/offsets, accepted values, field provenance, and case coverage | Cannot establish correct legal interpretation |
+| Human verifier | `HUMAN_1` | Inspect **every atomic case**, full source section, cross-references, AI omissions, both predictions and final record; record accept/correct/reject/uncertain and evidence | Not two independently annotating experts |
+| Independent expert reviewer (recommended subset) | `HUMAN_2` | Source-first, **blinded to both AI drafts**, on preselected or stratified held-out sample | Optional for pilot; needed for stronger independent-human reference claims |
+
+**Important independence limit:** A and B should preferably be from different model families/providers, but the program can only enforce distinct declared model identities. Human reviewers may be influenced by seeing AI answers. For rigorous evaluation, have the second human reviewer independently annotate a frozen test subset before accessing the model predictions.
+
+### 12.2 Annotation data lifecycle and statuses
+
+| `review_status` | Entry condition | Can be called gold? |
+|---|---|---|
+| `AI_DRAFT` | One/both model outputs collected with provenance | No |
+| `AI_AGREED` | Both AI field dictionaries **and evidence spans** match | No — shared error and shared omissions remain possible |
+| `AI_DISAGREED` | Any field, evidence or span differs | No |
+| `HUMAN_VERIFIED` | A real human checks *all fields and full legal context*, validates evidence and records signed disposition | Human-verified reference **only**; disclose 2-AI/1-human provenance |
+| `EXPERT_REVIEW_REQUIRED` | Human returns REJECT/UNCERTAIN, legal ambiguity, missing authoritative interpretation, or unresolved omissions | No |
+| `INDEPENDENT_HUMAN_ADJUDICATED` | Separately blinded human source annotation, documented resolution and quality gate | Eligible for stronger independently adjudicated gold **only** with provenance |
+
+The legacy `gold_ready` gate requiring two genuine human annotators and an adjudicator **must not be bypassed** for the existing `gold_count` metric. Maintain separate `human_verified_reference_count`, `independently_adjudicated_gold_count`, and `ai_agreement_count`. Never label an AI agreement or a single human's post-AI acceptance as two-person human gold.
+
+### 12.3 Required fields and review behavior
+
+| Field | Format | Requirement |
+|---|---|---|
+| `annotation_protocol` | `DUAL_LLM_SINGLE_HUMAN_VERIFICATION` | Mandatory in exports; distinguish legacy manual-double review |
+| `model_id`, `model_version`, `model_family`, `provider` | Nonempty strings with recorded origin | Distinct actual model identities; `model_family` documents the independence claim |
+| `prompt_sha256`, `run_timestamp`, `source_sha256` | Cryptographic hashes and ISO timestamp | Preserve model-prompt provenance and legal snapshot |
+| `predicted_fields`, `evidence_spans[]` | Typed fields + exact quote offsets | Independently generated without model-to-model sharing |
+| `field_disagreements[]`, `evidence_span_agreement` | Field names and both values; boolean span match | Agreement is only a triage signal |
+| `human_review.decision` | `ACCEPT`, `CORRECT`, `REJECT`, `UNCERTAIN` | ACCEPT requires full independently checked fields, not “both models agreed” |
+| `human_review.reviewed_all_fields` | boolean true | Reviewer checked target, holder, denominator, date, REC, qualifiers, evidence and NULL values |
+| `human_review.reviewed_full_source_context` | boolean true | Reviewer checked full section, cross-references and omission risk |
+| `human_review.final_fields` / `rationale` / `reviewed_evidence_spans[]` | Structured approved fields, substantive rationale, validated spans | Required for ACCEPT/CORRECT; record corrections, including field omissions |
+| `reference_status` | `NOT_HUMAN_VERIFIED`, `HUMAN_VERIFIED`, `EXPERT_REVIEW_REQUIRED` | Distinct from existing two-human `gold_ready` status |
+
+**Source-first completeness check:** The human must also identify any unmodeled obligations from the entire section (§8–§13), not only validate the two machine-proposed records. Disagreement-only review is inadequate. AI-agreed records must be fully reviewed, and human-introduced missed obligations must be given new annotation IDs and traceable source spans.
+
+### 12.4 Quality study design
+
+1. Start from the 26 *preliminary review tasks*, segment into truly atomic propositions and freeze the inventory before AI comparison. Do not claim that 26 tasks equal 26 gold clauses.
+2. Obtain separately executed model A/B predictions against identical frozen source text and the same codebook/field schema, preserving model IDs, versions, prompt hashes and all output JSONL. Do not treat the historical ChatGPT assisted prefill as two recorded model calls.
+3. Run deterministic comparison and create an AI-agreement/disagreement worklist with evidence spans.
+4. One human reviews **every task and the surrounding source**, accepts/corrects/rejects or flags uncertainty and saves detailed reasons. This produces a **human-verified, AI-assisted reference dataset**, not independent two-human gold.
+5. Reserve a stratified **20–30% subset as a design target, not a statistically guaranteed quality threshold**, enriched for RPS, conditional targets, REC, costs, reporting and ambiguous cross-references. A second human must annotate that subset source-first and without viewing either AI result or the first human's corrections. Document agreement before reconciliation.
+6. For actual LLM benchmark accuracy, avoid reference-set contamination: if A/B proposed the reference answers, their own evaluation against that reference can be circular. Prefer the independently annotated test subset and/or other held-out regulations, with clear involvement logs.
+7. Recompute all counts from records rather than manual README assertions. Report separately: source candidates, atomic clauses, AI A/B disagreements, human-verified cases, independent-human gold, and actual model inference calls.
+
+### 12.5 Implemented utilities and explicit limits
+
+- `src/energy_policy_llm/dual_llm_review.py`: imports predictions, verifies declared hashes/offsets against supplied source text, compares **all** predicted fields plus evidence spans and creates a full-review queue. `register_human_review` requires full-field/full-context declarations and saves single-human review **without gold promotion**.
+- `scripts/compare_dual_llm_annotations.py`: CLI for externally generated JSONL predictions. Example:
+
+```bash
+python scripts/compare_dual_llm_annotations.py \
+  --model-a outputs/model_a.jsonl \
+  --model-b outputs/model_b.jsonl \
+  --source-id NM_COOP_2025 \
+  --snapshot outputs/official_corpus/NM_COOP_2025.txt \
+  --output outputs/dual_llm_review_queue.json
+```
+
+- `tests/test_dual_llm_review.py`: **synthetic-fixture-only** tests checking source integrity, AI disagreements, distinct declared model identities and the non-gold human gate.
+- **Not implemented:** external model API execution, independent provider verification, automatic human identity authentication, REC/PyPSA engine integration, or a genuine human reviewer result. Programmatic checks cannot prove the model outputs were independently produced; the researcher must preserve the original run logs.
+- The current `annotations.py` two-human `gold_ready` logic remains unchanged, intentionally. The two protocols **must not share or inflate the same gold counter**.
 
