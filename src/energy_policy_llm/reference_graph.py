@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import re
 from .legal_chunker import LegalChunk
 
-REF = re.compile(r"\b(17\.9\.(?:571|572)\.\d+)(?:\(([A-Z])\))?\b")
+REF = re.compile(r"\\b(17\\.9\\.(?:571|572)\\.\\d+)(?:\\(([A-Z])\\))?(?![A-Za-z0-9_])")
 
 @dataclass(frozen=True)
 class ReferenceEdge:
