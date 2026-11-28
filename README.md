@@ -46,6 +46,12 @@ Implemented [ModelProfile](src/energy_policy_llm/model_profile.py), [PolicyIR](s
 
 Run `python scripts/demo_compiler_v2.py` after installation.
 
+## Synthetic REC ledger and PyPSA data boundary (2026-11-27)
+
+Added [illustrative REC accounting](src/energy_policy_llm/rec_accounting.py), [model-export contract](src/energy_policy_llm/pypsa_data_contract.py), [safety regression tests](tests/test_rec_accounting_and_data_contract.py), [runnable synthetic example](scripts/demo_rec_accounting.py), and [limitations/runbook](docs/REC_ACCOUNTING_DATA_CONTRACT_V1.md). The synthetic example deliberately shows **70% local renewable generation and a separate 5 MWh REC/retail-sales shortfall**; the figures are fabricated tests, not statutory compliance or empirical results. Duplicate certificate IDs are refused; owner, vintage, retirement year and eligibility are explicit. There is **no PyPSA solve, no genuine REC transaction integration, no human gold and no LLM benchmark** at this stage.
+
+Run `python scripts/demo_rec_accounting.py` after installing the project.
+
 ## Research question
 Can clean-energy policy language be converted into auditable, executable energy-system scenarios without silently changing its legal meaning?
 
